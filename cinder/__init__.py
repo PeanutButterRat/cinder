@@ -1,4 +1,5 @@
 from lark import Lark
 
 with open("cinder/cinder.lark") as file:
-    parser = Lark(file.read())
+    GRAMMAR = file.read()
+    parser = Lark(GRAMMAR)

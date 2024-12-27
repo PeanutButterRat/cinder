@@ -15,6 +15,7 @@ cinder = "cinder.cli:main"
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 isort = "^5.13.2"
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]

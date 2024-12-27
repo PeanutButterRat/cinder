@@ -1,1 +1,19 @@
-start: "program"
+?start: program
+
+program: expression
+
+?expression: term
+           | expression "+" term -> add
+           | expression "-" term -> sub
+
+?term: factor
+     | term "*" factor -> mul
+     | term "/" factor -> div
+
+?factor: NUMBER
+       | "(" expression ")"
+
+%import common.NUMBER
+%import common.WS
+
+%ignore WS
