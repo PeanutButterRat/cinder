@@ -18,7 +18,8 @@ def test_grammar_rule(rule, valid, invalid):
     parser = Lark(GRAMMAR, start=rule)
 
     for string in valid:
-        assert parser.parse(string) is not None
+        cst = parser.parse(string)
+        assert cst is not None
 
     for string in invalid:
         with pytest.raises(Exception):
