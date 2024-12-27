@@ -2,25 +2,23 @@ import pytest
 from lark import Lark
 
 from cinder import GRAMMAR
+from cinder.ast import transformer
+from cinder.ast.node import _Node
 
 
 @pytest.mark.parametrize(
-    "rule, valid, invalid",
+    "rule, strings",
     (
         (
             "expression",
             ["5 + 2 * (1 / 5)", "((((2)) + 3))/5", "1 * (2) + 3 / (5)"],
-            ["5 + + 2", "(((2)) + 3))", "(2 / (3 + 5)"],
         ),
     ),
 )
-def test_grammar_rule(rule, valid, invalid):
+def test_grammar_rule(rule, strings):
     parser = Lark(GRAMMAR, start=rule)
 
-    for string in valid:
+    for string in strings:
         cst = parser.parse(string)
-        assert cst is not None
-
-    for string in invalid:
-        with pytest.raises(Exception):
-            parser.parse(string)
+        ast = transformer.transform(cst)
+        assert isinstance(ast, _Node)

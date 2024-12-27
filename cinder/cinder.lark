@@ -1,6 +1,6 @@
 ?start: program
 
-program: expression
+program: expression -> prg
 
 ?expression: term
            | expression "+" term -> add

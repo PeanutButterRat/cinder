@@ -1,6 +1,7 @@
 import sys
 
 from cinder import parser
+from cinder.ast import transformer
 
 
 def main():
@@ -8,7 +9,11 @@ def main():
         print("usage: cinder <string>")
         sys.exit(1)
 
-    print(parser.parse(sys.argv[1]))
+    source = sys.argv[1]
+    cst = parser.parse(source)
+    ast = transformer.transform(cst)
+
+    print(ast.pretty())
 
 
 if __name__ == "__main__":
