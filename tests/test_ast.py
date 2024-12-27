@@ -3,6 +3,7 @@ from lark import Lark
 
 from cinder import GRAMMAR
 from cinder.ast import transformer
+from cinder.ast.node import _Node
 
 
 @pytest.mark.parametrize(
@@ -20,4 +21,4 @@ def test_grammar_rule(rule, strings):
     for string in strings:
         cst = parser.parse(string)
         ast = transformer.transform(cst)
-        assert ast is not None
+        assert isinstance(ast, _Node)

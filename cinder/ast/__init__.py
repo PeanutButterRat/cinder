@@ -2,14 +2,16 @@ import sys
 
 from lark import Transformer, ast_utils, v_args
 
+from cinder.ast.add import Add
+from cinder.ast.div import Div
+from cinder.ast.mul import Mul
+from cinder.ast.prg import Prg
+from cinder.ast.sub import Sub
+
 
 class AstTransformer(Transformer):
     def NUMBER(self, number):
         return int(number)
-
-    @v_args(inline=True)
-    def start(self, program):
-        return program
 
 
 module = sys.modules[__name__]
