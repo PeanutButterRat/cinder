@@ -13,7 +13,7 @@ def main():
     cst = parser.parse(source)
     ast = transformer.transform(cst)
 
-    print(ast)
+    print(ast.pretty())
 
 
 if __name__ == "__main__":
