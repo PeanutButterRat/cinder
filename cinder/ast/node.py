@@ -1,4 +1,5 @@
 from lark.ast_utils import Ast
+from llvmlite import ir
 
 INDENT = "  "
 
@@ -15,6 +16,9 @@ class _Node(Ast):
                 string += "\n" + indentation + str(attribute)
 
         return string
+
+    def compile(self, builder):
+        pass
 
 
 class _Expression(_Node):

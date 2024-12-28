@@ -10,7 +10,7 @@ program: expression -> prg
      | term "*" factor -> mul
      | term "/" factor -> div
 
-?factor: NUMBER
+?factor: NUMBER -> num
        | "(" expression ")"
 
 %import common.NUMBER

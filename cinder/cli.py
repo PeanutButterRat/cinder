@@ -1,5 +1,7 @@
 import sys
 
+from llvmlite import binding, ir
+
 from cinder import parser
 from cinder.ast import transformer
 
@@ -13,7 +15,14 @@ def main():
     cst = parser.parse(source)
     ast = transformer.transform(cst)
 
-    print(ast.pretty())
+    module = ir.Module()
+    entry = ir.Function(module, ir.FunctionType(ir.IntType(32), []), "main")
+    block = entry.append_basic_block()
+    builder = ir.IRBuilder(block)
+
+    ast.compile(builder)
+
+    print(module)
 
 
 if __name__ == "__main__":

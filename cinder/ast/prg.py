@@ -6,3 +6,6 @@ from cinder.ast.node import _Expression, _Node
 @dataclass
 class Prg(_Node):
     expression: _Expression
+
+    def compile(self, builder):
+        return self.expression.compile(builder)
