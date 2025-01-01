@@ -1,6 +1,8 @@
 ?start: program
 
-program: expression -> prg
+program: statement* -> prg
+
+?statement: "let" IDENTIFIER "=" expression ";" -> asn
 
 ?expression: term
            | expression "+" term -> add
@@ -15,5 +17,6 @@ program: expression -> prg
 
 %import common.NUMBER
 %import common.WS
+%import common.CNAME -> IDENTIFIER
 
 %ignore WS

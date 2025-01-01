@@ -12,5 +12,5 @@ class Num(_Expression):
     def __init__(self, number):
         self.value = int(number)
 
-    def compile(self, builder):
+    def compile(self, builder=None, symbols=None):
         return ir.Constant(ir.IntType(32), self.value)
