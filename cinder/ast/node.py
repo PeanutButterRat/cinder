@@ -17,6 +17,9 @@ class _Node(Ast):
 
         return string
 
+    def verify(self):
+        pass
+
     def compile(self):
         pass
 

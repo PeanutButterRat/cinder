@@ -17,6 +17,7 @@ def main():
     source = sys.argv[1]
     cst = parser.parse(source)
     ast = transformer.transform(cst)
+    ast.verify()
     module = ast.compile()
 
     binding.initialize()
