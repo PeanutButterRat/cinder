@@ -17,7 +17,7 @@ class _Node(Ast):
 
         return string
 
-    def compile(self, builder):
+    def compile(self):
         pass
 
 
