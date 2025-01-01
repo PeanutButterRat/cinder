@@ -1,6 +1,9 @@
 ?start: program
 
-program: expression -> prg
+program: statement* -> prg
+
+?statement: "let" IDENTIFIER "=" expression ";" -> asn
+          | "print" expression ";"              -> prt
 
 ?expression: term
            | expression "+" term -> add
@@ -11,9 +14,11 @@ program: expression -> prg
      | term "/" factor -> div
 
 ?factor: NUMBER -> num
+       | IDENTIFIER
        | "(" expression ")"
 
 %import common.NUMBER
 %import common.WS
+%import common.CNAME -> IDENTIFIER
 
 %ignore WS

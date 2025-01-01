@@ -1,4 +1,4 @@
-from lark.ast_utils import Ast
+from lark.ast_utils import AsList, Ast
 from llvmlite import ir
 
 INDENT = "  "
@@ -9,20 +9,31 @@ class _Node(Ast):
         string = indent + type(self).__name__
         indentation = indent + INDENT
 
-        for attribute in vars(self).values():
-            if isinstance(attribute, _Node):
-                string += "\n" + attribute.pretty(indentation)
+        def format(value):
+            if isinstance(value, _Node):
+                return value.pretty(indentation)
             else:
-                string += "\n" + indentation + str(attribute)
+                return indentation + str(value)
+
+        for attribute in vars(self).values():
+            if isinstance(attribute, list):
+                for element in attribute:
+                    string += "\n" + format(element)
+            else:
+                string += "\n" + format(attribute)
 
         return string
 
     def verify(self):
         pass
 
-    def compile(self):
+    def compile(self, module=None, builder=None, symbols=None):
         pass
 
 
 class _Expression(_Node):
+    pass
+
+
+class _Statement(_Node):
     pass

@@ -15,6 +15,10 @@ def main():
         sys.exit(1)
 
     source = sys.argv[1]
+    compile(source)
+
+
+def compile(source):
     cst = parser.parse(source)
     ast = transformer.transform(cst)
     ast.verify()
@@ -31,7 +35,10 @@ def main():
     with NamedTemporaryFile(delete=False) as file:
         file.write(machine.emit_object(module))
 
-    subprocess.run(["gcc", "-o", "output.exe", file.name])
+    os.makedirs("build", exist_ok=True)
+    output = os.path.join("build", "output.exe")
+
+    subprocess.run(["gcc", "-o", output, file.name])
 
     try:
         os.remove(file.name)
