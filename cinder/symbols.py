@@ -6,15 +6,19 @@ class Symbols:
         self.scopes[-1][symbol] = data
 
     def __getitem__(self, symbol):
-        return self.scopes[-1][symbol]
+        for scope in reversed(self.scopes):
+            if symbol in scope:
+                return scope[symbol]
+
+        raise KeyError(f"undefined symbol: '{symbol}'")
 
     def push(self):
         self.scopes.append({})
+        return self
 
     def pop(self):
         if not (len(self.scopes) >= 2):
-            raise RuntimeError(
-                "attempted to remove the base scope from the symbol table"
-            )
+            raise RuntimeError("attempted to remove base scope from symbol table")
 
         self.scopes.pop()
+        return self
