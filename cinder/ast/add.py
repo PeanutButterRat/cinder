@@ -8,7 +8,7 @@ class Add(_Expression):
     left: _Expression
     right: _Expression
 
-    def compile(self, builder=None, symbols=None):
-        left = self.left.compile(builder, symbols)
-        right = self.right.compile(builder, symbols)
+    def compile(self, module=None, builder=None, symbols=None):
+        left = self.left.compile(module, builder, symbols)
+        right = self.right.compile(module, builder, symbols)
         return builder.add(left, right)

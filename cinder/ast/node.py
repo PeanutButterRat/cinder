@@ -27,7 +27,7 @@ class _Node(Ast):
     def verify(self):
         pass
 
-    def compile(self, builder=None, symbols=None):
+    def compile(self, module=None, builder=None, symbols=None):
         pass
 
 

@@ -18,9 +18,28 @@ class Prg(_Node, AsList):
         builder = ir.IRBuilder(block)
         symbols = Symbols()
 
-        for statement in self.statements:
-            last = statement.compile(builder, symbols)
+        printf = ir.Function(
+            module,
+            ir.FunctionType(
+                ir.IntType(32), [ir.PointerType(ir.IntType(8))], var_arg=True
+            ),
+            name="printf",
+        )
 
-        builder.ret(builder.load(last))
+        format = ir.GlobalVariable(
+            module, ir.ArrayType(ir.IntType(8), count=4), name="format"
+        )
+        format.global_constant = True
+        format.initializer = ir.Constant(
+            ir.ArrayType(ir.IntType(8), count=4),
+            bytearray("%d\n".encode("utf8") + b"\0"),
+        )
+
+        symbols["printf"] = printf
+
+        for statement in self.statements:
+            statement.compile(module, builder, symbols)
+
+        builder.ret(ir.Constant(ir.IntType(32), 0))
 
         return module

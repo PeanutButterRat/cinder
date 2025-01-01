@@ -12,6 +12,6 @@ class Idn(_Node):
     def __init__(self, name):
         self.name = name.value
 
-    def compile(self, builder=None, symbols=None):
+    def compile(self, module=None, builder=None, symbols=None):
         address = symbols[self.name]
         return builder.load(address)

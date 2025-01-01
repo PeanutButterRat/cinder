@@ -14,9 +14,9 @@ class Asn(_Statement):
         self.identifier = identifier.name
         self.expression = expression
 
-    def compile(self, builder=None, symbols=None):
+    def compile(self, module=None, builder=None, symbols=None):
         address = builder.alloca(ir.IntType(32), name=self.identifier)
-        expression = self.expression.compile(builder, symbols)
+        expression = self.expression.compile(module, builder, symbols)
         builder.store(expression, address)
         symbols[self.identifier] = address
         return address

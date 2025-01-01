@@ -9,6 +9,7 @@ from cinder.ast.idn import Idn
 from cinder.ast.mul import Mul
 from cinder.ast.num import Num
 from cinder.ast.prg import Prg
+from cinder.ast.prt import Prt
 from cinder.ast.sub import Sub
 
 

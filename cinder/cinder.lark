@@ -3,6 +3,7 @@
 program: statement* -> prg
 
 ?statement: "let" IDENTIFIER "=" expression ";" -> asn
+          | "print" expression ";"              -> prt
 
 ?expression: term
            | expression "+" term -> add
