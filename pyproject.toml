@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 lark = "^1.2.2"
+llvmlite = "^0.43.0"
 
 [tool.poetry.scripts]
 cinder = "cinder.cli:main"
