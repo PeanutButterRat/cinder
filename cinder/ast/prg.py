@@ -16,9 +16,10 @@ class Prg(_Node, AsList):
         entry = ir.Function(module, ir.FunctionType(ir.IntType(32), []), "main")
         block = entry.append_basic_block()
         builder = ir.IRBuilder(block)
+        symbols = Symbols()
 
         for statement in self.statements:
-            last = statement.compile(builder, Symbols())
+            last = statement.compile(builder, symbols)
 
         builder.ret(builder.load(last))
 

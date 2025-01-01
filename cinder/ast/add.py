@@ -9,6 +9,6 @@ class Add(_Expression):
     right: _Expression
 
     def compile(self, builder=None, symbols=None):
-        left = self.left.compile(builder)
-        right = self.right.compile(builder)
+        left = self.left.compile(builder, symbols)
+        right = self.right.compile(builder, symbols)
         return builder.add(left, right)

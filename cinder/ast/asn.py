@@ -16,5 +16,7 @@ class Asn(_Statement):
 
     def compile(self, builder=None, symbols=None):
         address = builder.alloca(ir.IntType(32), name=self.identifier)
-        builder.store(self.expression.compile(builder), address)
+        expression = self.expression.compile(builder, symbols)
+        builder.store(expression, address)
+        symbols[self.identifier] = address
         return address

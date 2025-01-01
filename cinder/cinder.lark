@@ -13,6 +13,7 @@ program: statement* -> prg
      | term "/" factor -> div
 
 ?factor: NUMBER -> num
+       | IDENTIFIER
        | "(" expression ")"
 
 %import common.NUMBER
