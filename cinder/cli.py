@@ -15,6 +15,10 @@ def main():
         sys.exit(1)
 
     source = sys.argv[1]
+    compile(source)
+
+
+def compile(source):
     cst = parser.parse(source)
     ast = transformer.transform(cst)
     ast.verify()
