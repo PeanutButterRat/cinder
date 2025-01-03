@@ -38,3 +38,11 @@ class Num(_Expression):
 
     def __init__(self, number):
         self.value = int(number)
+
+
+@dataclass
+class Idn(_Node):
+    name: str
+
+    def __init__(self, name):
+        self.name = name.value
