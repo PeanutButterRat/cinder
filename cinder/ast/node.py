@@ -26,10 +26,5 @@ class _Node(Ast):
         return string
 
 
-@dataclass
-class _Expression(_Node):
-    type: str = field(default=None, init=False)
-
-
 class _Statement(_Node):
     pass

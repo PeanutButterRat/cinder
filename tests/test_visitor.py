@@ -1,9 +1,6 @@
 from collections import defaultdict
 
-from cinder.ast.add import Add
-from cinder.ast.node import _Expression
-from cinder.ast.num import Num
-from cinder.ast.sub import Sub
+from cinder.ast.expressions import Add, Num, Sub, _Expression
 from cinder.visitor import Visitor
 
 
