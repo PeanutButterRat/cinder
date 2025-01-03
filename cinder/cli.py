@@ -7,7 +7,7 @@ from llvmlite import binding
 
 from cinder import parser
 from cinder.ast import transformer
-from cinder.visitor import ASTCompiler, ASTVerifier
+from cinder.visitors import ASTCompiler, ASTVerifier
 
 
 def main():

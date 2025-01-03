@@ -1,8 +1,8 @@
 from llvmlite import ir
 
-from cinder.ast.node import _Node
+from cinder.ast import _Node
 from cinder.symbols import Symbols
-from cinder.visitor.visitor import Visitor
+from cinder.visitors.visitor import Visitor
 
 
 class ASTCompiler(Visitor):

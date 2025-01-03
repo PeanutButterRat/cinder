@@ -1,10 +1,11 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from lark.ast_utils import Ast
 
 INDENT = "  "
 
 
+@dataclass
 class _Node(Ast):
     def pretty(self, indent=""):
         string = indent + type(self).__name__
