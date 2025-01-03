@@ -25,9 +25,6 @@ class _Node(Ast):
 
         return string
 
-    def compile(self, module=None, builder=None, symbols=None):
-        pass
-
 
 @dataclass
 class _Expression(_Node):

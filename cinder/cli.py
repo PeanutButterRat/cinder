@@ -7,7 +7,7 @@ from llvmlite import binding
 
 from cinder import parser
 from cinder.ast import transformer
-from cinder.visitor import ASTVerifier
+from cinder.visitor import ASTCompiler, ASTVerifier
 
 
 def main():
@@ -27,7 +27,7 @@ def compile(source):
     cst = parser.parse(source)
     ast = transformer.transform(cst)
     ASTVerifier().visit(ast)
-    module = ast.compile()
+    module = ASTCompiler().visit(ast)
 
     binding.initialize()
     binding.initialize_native_target()
