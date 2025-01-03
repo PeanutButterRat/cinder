@@ -1,16 +1,14 @@
 import sys
+from typing import List
 
-from lark import Transformer, ast_utils
+from lark import Transformer
+from lark.ast_utils import AsList, create_transformer
 
-from cinder.ast.add import Add
-from cinder.ast.asn import Asn
-from cinder.ast.div import Div
-from cinder.ast.idn import Idn
-from cinder.ast.mul import Mul
-from cinder.ast.num import Num
-from cinder.ast.prg import Prg
-from cinder.ast.prt import Prt
-from cinder.ast.sub import Sub
+from cinder.ast.expressions import *
+from cinder.ast.expressions import _Expression
+from cinder.ast.node import _Node
+from cinder.ast.statements import *
+from cinder.ast.statements import _Statement
 
 
 class AstTransformer(Transformer):
@@ -18,5 +16,10 @@ class AstTransformer(Transformer):
         return Idn(name)
 
 
+@dataclass
+class Prg(_Node, AsList):
+    statements: List[_Statement]
+
+
 module = sys.modules[__name__]
-transformer = ast_utils.create_transformer(module, AstTransformer())
+transformer = create_transformer(module, AstTransformer())

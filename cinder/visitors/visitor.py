@@ -1,4 +1,4 @@
-from cinder.ast.node import _Node
+from cinder.ast import _Node
 
 
 class Visitor:
