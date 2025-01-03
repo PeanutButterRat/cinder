@@ -16,7 +16,11 @@ def main():
         sys.exit(1)
 
     source = sys.argv[1]
-    compile(source)
+
+    try:
+        compile(source)
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def compile(source):
