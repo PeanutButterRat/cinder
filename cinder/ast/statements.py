@@ -1,7 +1,17 @@
 from dataclasses import dataclass
 
 from cinder.ast.expressions import _Expression
-from cinder.ast.node import _Statement
+from cinder.ast.node import _Node
+
+
+@dataclass
+class _Statement(_Node):
+    pass
+
+
+@dataclass
+class Prt(_Statement):
+    expression: _Expression
 
 
 @dataclass

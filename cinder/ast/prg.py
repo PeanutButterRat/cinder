@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-from cinder.ast.node import AsList, _Node, _Statement
+from cinder.ast.node import AsList, _Node
+from cinder.ast.statements import _Statement
 
 
 @dataclass

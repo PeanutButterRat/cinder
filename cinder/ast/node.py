@@ -24,7 +24,3 @@ class _Node(Ast):
                 string += "\n" + format(attribute)
 
         return string
-
-
-class _Statement(_Node):
-    pass
