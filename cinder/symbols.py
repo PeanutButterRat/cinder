@@ -1,24 +1,21 @@
-class Symbols:
-    def __init__(self):
-        self.scopes = [{}]
-
-    def __setitem__(self, symbol, data):
-        self.scopes[-1][symbol] = data
+class Symbols(dict):
+    def __init__(self, previous=None):
+        super().__init__()
+        self.previous = previous
 
     def __getitem__(self, symbol):
-        for scope in reversed(self.scopes):
-            if symbol in scope:
-                return scope[symbol]
-
-        raise KeyError(f"undefined symbol: '{symbol}'")
+        if symbol in self:
+            return super().__getitem__(symbol)
+        elif self.previous is None:
+            raise KeyError(f"undefined symbol ({symbol})")
+        else:
+            return self.previous[symbol]
 
     def push(self):
-        self.scopes.append({})
-        return self
+        return Symbols(self)
 
     def pop(self):
-        if not (len(self.scopes) >= 2):
+        if self.previous is None:
             raise RuntimeError("attempted to remove base scope from symbol table")
-
-        self.scopes.pop()
-        return self
+        else:
+            return self.previous

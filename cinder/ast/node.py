@@ -1,5 +1,6 @@
+from dataclasses import dataclass, field
+
 from lark.ast_utils import AsList, Ast
-from llvmlite import ir
 
 INDENT = "  "
 
@@ -24,15 +25,10 @@ class _Node(Ast):
 
         return string
 
-    def verify(self):
-        pass
 
-    def compile(self, module=None, builder=None, symbols=None):
-        pass
-
-
+@dataclass
 class _Expression(_Node):
-    pass
+    type: str = field(default=None, init=False)
 
 
 class _Statement(_Node):

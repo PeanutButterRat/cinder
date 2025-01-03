@@ -4,21 +4,20 @@ from cinder.symbols import Symbols
 
 
 def test_symbol_table_scope():
-    symbols = Symbols()
-    symbols.push().push().pop().pop()
+    symbols = Symbols().push().push().pop().pop()
 
     symbols["a"] = "somedata"
     symbols["b"] = "samedata"
     assert symbols["a"] == "somedata"
     assert symbols["b"] == "samedata"
 
-    symbols.push()
+    symbols = symbols.push()
     symbols["a"] = "otherdata"
 
     assert symbols["a"] == "otherdata"
     assert symbols["b"] == "samedata"
 
-    symbols.pop()
+    symbols = symbols.pop()
 
     assert symbols["a"] == "somedata"
     assert symbols["b"] == "samedata"
