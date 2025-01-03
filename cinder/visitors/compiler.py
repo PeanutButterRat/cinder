@@ -2,15 +2,14 @@ from llvmlite import ir
 
 from cinder.ast import _Node
 from cinder.symbols import Symbols
-from cinder.visitors.visitor import Visitor
+from cinder.visitors.visitor import Interpreter
 
 
-class ASTCompiler(Visitor):
+class ASTCompiler(Interpreter):
     def __init__(self):
         super().__init__()
         self.symbols = Symbols()
         self.module = ir.Module()
-        self.instructions = {}
 
         entry = ir.Function(self.module, ir.FunctionType(ir.IntType(32), []), "main")
         block = entry.append_basic_block()
@@ -35,52 +34,41 @@ class ASTCompiler(Visitor):
 
         self.symbols["printf"] = printf
 
-    def visit(self, node):
-        super().visit(node)
-        return self.module
-
     def Prg(self, statements):
+        for statement in statements:
+            self.visit(statement)
+
         self.builder.ret(ir.Constant(ir.IntType(32), 0))
+
+        return self.module
 
     def Prt(self, expression):
         printf = self.symbols["printf"]
         format = self.builder.bitcast(
             self.module.get_global("format"), ir.PointerType(ir.IntType(8))
         )
-        self.builder.call(printf, [format, self.instructions[id(expression)]])
+        return self.builder.call(printf, [format, self.visit(expression)])
 
     def Add(self, left, right, type):
-        instruction = self.builder.add(
-            self.instructions[id(left)], self.instructions[id(right)]
-        )
-        self.instructions[id(self.current)] = instruction
+        return self.builder.add(self.visit(left), self.visit(right))
 
     def Sub(self, left, right, type):
-        instruction = self.builder.sub(
-            self.instructions[id(left)], self.instructions[id(right)]
-        )
-        self.instructions[id(self.current)] = instruction
+        return self.builder.sub(self.visit(left), self.visit(right))
 
     def Mul(self, left, right, type):
-        instruction = self.builder.mul(
-            self.instructions[id(left)], self.instructions[id(right)]
-        )
-        self.instructions[id(self.current)] = instruction
+        return self.builder.mul(self.visit(left), self.visit(right))
 
     def Div(self, left, right, type):
-        instruction = self.builder.sdiv(
-            self.instructions[id(left)], self.instructions[id(right)]
-        )
-        self.instructions[id(self.current)] = instruction
+        return self.builder.sdiv(self.visit(left), self.visit(right))
 
     def Num(self, value, type):
-        self.instructions[id(self.current)] = ir.Constant(ir.IntType(32), value)
+        return ir.Constant(ir.IntType(32), value)
 
     def Idn(self, name, type):
         address = self.symbols[name]
-        self.instructions[id(self.current)] = self.builder.load(address)
+        return self.builder.load(address)
 
     def Asn(self, identifier, expression):
         address = self.builder.alloca(ir.IntType(32), name=identifier)
-        self.builder.store(self.instructions[id(expression)], address)
         self.symbols[identifier] = address
+        self.builder.store(self.visit(expression), address)

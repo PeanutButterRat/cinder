@@ -30,7 +30,7 @@ class Interpreter:
         self.current = node
         children = vars(node).values() if isinstance(node, _Node) else []
         classname = type(node).__name__
-        getattr(self, classname, self.__default__)(*children)
+        return getattr(self, classname, self.__default__)(*children)
 
     def __default__(self, *args):
         pass
