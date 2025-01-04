@@ -9,31 +9,31 @@ class _Expression(_Node):
 
 
 @dataclass
-class Add(_Expression):
+class Addn(_Expression):
     left: _Expression
     right: _Expression
 
 
 @dataclass
-class Sub(_Expression):
+class Subn(_Expression):
     left: _Expression
     right: _Expression
 
 
 @dataclass
-class Mul(_Expression):
+class Muln(_Expression):
     left: _Expression
     right: _Expression
 
 
 @dataclass
-class Div(_Expression):
+class Divn(_Expression):
     left: _Expression
     right: _Expression
 
 
 @dataclass
-class Num(_Expression):
+class Numb(_Expression):
     value: int
 
     def __init__(self, number):
@@ -41,7 +41,7 @@ class Num(_Expression):
 
 
 @dataclass
-class Idn(_Node):
+class Idnt(_Node):
     name: str
 
     def __init__(self, name):

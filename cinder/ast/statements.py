@@ -10,12 +10,12 @@ class _Statement(_Node):
 
 
 @dataclass
-class Prt(_Statement):
+class Prnt(_Statement):
     expression: _Expression
 
 
 @dataclass
-class Asn(_Statement):
+class Asgn(_Statement):
     identifier: str
     expression: _Expression
 

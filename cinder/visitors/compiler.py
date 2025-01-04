@@ -34,7 +34,7 @@ class ASTCompiler(Interpreter):
 
         self.symbols["printf"] = printf
 
-    def Prg(self, statements):
+    def Prgm(self, statements):
         for statement in statements:
             self.visit(statement)
 
@@ -42,33 +42,33 @@ class ASTCompiler(Interpreter):
 
         return self.module
 
-    def Prt(self, expression):
+    def Prnt(self, expression):
         printf = self.symbols["printf"]
         format = self.builder.bitcast(
             self.module.get_global("format"), ir.PointerType(ir.IntType(8))
         )
         return self.builder.call(printf, [format, self.visit(expression)])
 
-    def Add(self, left, right, type):
+    def Addn(self, left, right, type):
         return self.builder.add(self.visit(left), self.visit(right))
 
-    def Sub(self, left, right, type):
+    def Subn(self, left, right, type):
         return self.builder.sub(self.visit(left), self.visit(right))
 
-    def Mul(self, left, right, type):
+    def Muln(self, left, right, type):
         return self.builder.mul(self.visit(left), self.visit(right))
 
-    def Div(self, left, right, type):
+    def Divn(self, left, right, type):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
-    def Num(self, value, type):
+    def Numb(self, value, type):
         return ir.Constant(ir.IntType(32), value)
 
-    def Idn(self, name, type):
+    def Idnt(self, name, type):
         address = self.symbols[name]
         return self.builder.load(address)
 
-    def Asn(self, identifier, expression):
+    def Asgn(self, identifier, expression):
         address = self.builder.alloca(ir.IntType(32), name=identifier)
         self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)

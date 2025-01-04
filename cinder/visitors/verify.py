@@ -8,36 +8,36 @@ class ASTVerifier(Visitor):
         super().__init__()
         self.symbols = Symbols()
 
-    def Asn(self, identifier, expression):
+    def Asgn(self, identifier, expression):
         self.symbols[identifier] = expression.type
 
-    def Add(self, left, right):
+    def Addn(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in addition operation ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Sub(self, left, right):
+    def Subn(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in subtraction operation ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Mul(self, left, right):
+    def Muln(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in multiplication operation ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Div(self, left, right):
+    def Divn(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in division operation ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Num(self, number):
+    def Numb(self, number):
         self.current.type = "i32"
 
-    def Idn(self, name):
+    def Idnt(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]
