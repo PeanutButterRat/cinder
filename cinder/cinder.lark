@@ -1,19 +1,22 @@
 ?start: program
 
-program: statement* -> prg
+program: statement* -> prgm
 
-?statement: "let" IDENTIFIER "=" expression ";" -> asn
-          | "print" expression ";"              -> prt
+?statement: "let" IDENTIFIER "=" expression ";"                             -> asgn
+          | "print" expression ";"                                          -> prnt
+          | "if" expression block ["elif" expression block]* ["else" block] -> ifel
+
+block: "{" statement* "}" -> blck
 
 ?expression: term
-           | expression "+" term -> add
-           | expression "-" term -> sub
+           | expression "+" term -> addn
+           | expression "-" term -> subn
 
 ?term: factor
-     | term "*" factor -> mul
-     | term "/" factor -> div
+     | term "*" factor -> muln
+     | term "/" factor -> divn
 
-?factor: NUMBER -> num
+?factor: NUMBER -> numb
        | IDENTIFIER
        | "(" expression ")"
 

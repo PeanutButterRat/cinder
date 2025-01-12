@@ -20,3 +20,17 @@ class Visitor:
 
     def __default__(self, *args):
         pass
+
+
+class Interpreter:
+    def __init__(self):
+        self.current = None
+
+    def visit(self, node):
+        self.current = node
+        children = vars(node).values() if isinstance(node, _Node) else []
+        classname = type(node).__name__
+        return getattr(self, classname, self.__default__)(*children)
+
+    def __default__(self, *args):
+        pass

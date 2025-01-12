@@ -13,11 +13,11 @@ from cinder.ast.statements import _Statement
 
 class AstTransformer(Transformer):
     def IDENTIFIER(self, name):
-        return Idn(name)
+        return Idnt(name)
 
 
 @dataclass
-class Prg(_Node, AsList):
+class Prgm(_Node, AsList):
     statements: List[_Statement]
 
 
