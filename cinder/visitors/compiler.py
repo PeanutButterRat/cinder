@@ -72,3 +72,35 @@ class ASTCompiler(Interpreter):
         address = self.builder.alloca(ir.IntType(32), name=identifier)
         self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)
+
+    def Blck(self, statements):
+        self.symbols = self.symbols.push()
+
+        for statement in statements:
+            self.visit(statement)
+
+        self.symbols = self.symbols.pop()
+
+    def Ifel(self, conditions, blocks, otherwise):
+        value = self.visit(conditions[0])
+        predicate = self.builder.icmp_signed(
+            "!=", value, ir.Constant(ir.IntType(32), 0)
+        )
+
+        if len(conditions) >= 2:
+            with self.builder.if_else(predicate) as (then, other):
+                with then:
+                    self.visit(blocks[0])
+                with other:
+                    self.Ifel(conditions[1:], blocks[1:], otherwise)
+
+        elif otherwise:
+            with self.builder.if_else(predicate) as (then, other):
+                with then:
+                    self.visit(blocks[0])
+                with other:
+                    self.visit(otherwise)
+
+        else:
+            with self.builder.if_then(predicate):
+                self.visit(blocks[0])

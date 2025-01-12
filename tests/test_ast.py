@@ -13,6 +13,10 @@ from cinder.ast.node import _Node
             "expression",
             ["5 + 2 * (1 / 5)", "((((2)) + 3))/5", "1 * (2) + 3 / (5)"],
         ),
+        (
+            "statement",
+            ["if a { print a; } elif b { print b; } else { print c; }"],
+        ),
     ),
 )
 def test_grammar_rule(rule, strings):
