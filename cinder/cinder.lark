@@ -4,7 +4,7 @@ program: statement* -> prgm
 
 ?statement: "let" IDENTIFIER "=" expression ";"                             -> asgn
           | "print" expression ";"                                          -> prnt
-          | "if" expression block ["elif" expression block]* ["else" block] -> ifel
+          | "if" expression block ("elif" expression block)* ["else" block] -> ifel
 
 block: "{" statement* "}" -> blck
 

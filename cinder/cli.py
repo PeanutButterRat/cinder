@@ -1,9 +1,11 @@
+import argparse
 import os
 import subprocess
 import sys
 from tempfile import NamedTemporaryFile
 
 from llvmlite import binding
+from llvmlite.binding import Target
 
 from cinder import parser
 from cinder.ast import transformer
@@ -11,29 +13,54 @@ from cinder.visitors import ASTCompiler, ASTVerifier
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("usage: cinder <string>")
-        sys.exit(1)
+    argparser = argparse.ArgumentParser(
+        prog="cinder", description="A low-level systems programming language."
+    )
 
-    source = sys.argv[1]
+    argparser.add_argument("source", help="source string to compile")
+    argparser.add_argument(
+        "-s",
+        "--show-ast",
+        action="store_true",
+        help="show the abstract syntax tree (AST) before attempting to compile",
+    )
+    argparser.add_argument(
+        "-t", "--target", help="platform to compile for specified as a target triple"
+    )
+    args = argparser.parse_args()
 
     try:
-        compile(source)
+        ast = parse(args.source)
+
+        if args.show_ast:
+            print(ast.pretty())
+
+        target = args.target if args.target else "default"
+        compile(ast, target)
+
     except Exception as e:
         print(f"Error: {e}")
 
 
-def compile(source):
+def parse(source):
     cst = parser.parse(source)
     ast = transformer.transform(cst)
     ASTVerifier().visit(ast)
+    return ast
+
+
+def compile(ast, target="default"):
     module = ASTCompiler().visit(ast)
 
     binding.initialize()
     binding.initialize_native_target()
     binding.initialize_native_asmprinter()
 
-    target = binding.Target.from_default_triple()
+    if target == "default":
+        target = Target.from_default_triple()
+    else:
+        target = Target.from_triple(target)
+
     machine = target.create_target_machine(codemodel="default")
     module = binding.parse_assembly(str(module))
 

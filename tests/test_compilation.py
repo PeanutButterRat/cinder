@@ -2,7 +2,7 @@ import subprocess
 
 import pytest
 
-from cinder.cli import compile
+from cinder.cli import compile, parse
 
 
 @pytest.mark.parametrize(
@@ -14,7 +14,8 @@ from cinder.cli import compile
     ],
 )
 def test_compilation(source):
-    compile(source)
+    ast = parse(source)
+    compile(ast)
     completed = subprocess.run(["build/output.exe"])
 
     assert completed.returncode == 0
