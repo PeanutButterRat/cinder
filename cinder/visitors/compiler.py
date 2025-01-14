@@ -107,3 +107,21 @@ class ASTCompiler(Interpreter):
         else:
             with self.builder.if_then(predicate):
                 self.visit(blocks[0])
+
+    def Grth(self, left, right, type):
+        return self.builder.icmp_signed(">", self.visit(left), self.visit(right))
+
+    def Greq(self, left, right, type):
+        return self.builder.icmp_signed(">=", self.visit(left), self.visit(right))
+
+    def Lsth(self, left, right, type):
+        return self.builder.icmp_signed("<", self.visit(left), self.visit(right))
+
+    def Lseq(self, left, right, type):
+        return self.builder.icmp_signed("<=", self.visit(left), self.visit(right))
+
+    def Nteq(self, left, right, type):
+        return self.builder.icmp_signed("!=", self.visit(left), self.visit(right))
+
+    def Equl(self, left, right, type):
+        return self.builder.icmp_signed("==", self.visit(left), self.visit(right))

@@ -48,3 +48,19 @@ class ASTVerifier(Visitor):
     def Idnt(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]
+
+    def comparison(self, left, right):
+        assert isinstance(
+            left.type, i32
+        ), f"left side of comparison is not integer expession ({left.type})"
+        assert isinstance(
+            right.type, i32
+        ), f"right side of comparison is not integer expession ({right.type})"
+        self.current.type = bool()
+
+    Grth = comparison
+    Greq = comparison
+    Lsth = comparison
+    Lseq = comparison
+    Nteq = comparison
+    Equl = comparison

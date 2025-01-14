@@ -32,4 +32,4 @@ class i32(Type):
 @dataclass
 class bool(Type):
     def to_ir(self):
-        return ir.IntType(32)
+        return ir.IntType(1)

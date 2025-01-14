@@ -2,11 +2,21 @@
 
 program: statement* -> prgm
 
-?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> asgn
-          | "print" expression ";"                                          -> prnt
-          | "if" expression block ("elif" expression block)* ["else" block] -> ifel
+?statement: "let" CNAME ":" TYPE "=" value ";"                    -> asgn
+          | "print" value ";"                                     -> prnt
+          | "if" value block ("elif" value block)* ["else" block] -> ifel
 
 block: "{" statement* "}" -> blck
+
+?value: comparison
+
+?comparison: expression
+           | expression ">" expression  -> grth
+           | expression ">=" expression -> greq
+           | expression "<" expression  -> lsth
+           | expression "<=" expression -> lseq
+           | expression "!=" expression -> nteq
+           | expression "==" expression -> equl
 
 ?expression: term
            | expression "+" term -> addn
