@@ -62,7 +62,10 @@ class ASTCompiler(Interpreter):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
     def Numb(self, value, type):
-        return ir.Constant(ir.IntType(32), value)
+        return ir.Constant(type.to_ir(), value)
+
+    def Bool(self, boolean, type):
+        return ir.Constant(type.to_ir(), 1 if boolean else 0)
 
     def Idnt(self, name, type):
         address = self.symbols[name]

@@ -42,6 +42,9 @@ class ASTVerifier(Visitor):
     def Numb(self, number):
         self.current.type = i32()
 
+    def Bool(self, boolean):
+        self.current.type = bool()
+
     def Idnt(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]

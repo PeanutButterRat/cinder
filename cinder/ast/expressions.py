@@ -41,6 +41,14 @@ class Numb(_Expression):
 
 
 @dataclass
+class Bool(_Expression):
+    value: bool
+
+    def __init__(self, bool):
+        self.value = bool == "true"
+
+
+@dataclass
 class Idnt(_Node):
     name: str
 

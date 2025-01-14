@@ -16,11 +16,13 @@ block: "{" statement* "}" -> blck
      | term "*" factor -> muln
      | term "/" factor -> divn
 
-?factor: NUMBER -> numb
+?factor: NUMBER  -> numb
+       | LITERAL -> bool
        | CNAME
        | "(" expression ")"
 
-TYPE: "i32"
+TYPE: "i32" | "bool"
+LITERAL: "true" | "false"
 
 %import common.NUMBER
 %import common.WS
