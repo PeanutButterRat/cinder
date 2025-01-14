@@ -12,7 +12,7 @@ from cinder.ast.statements import _Statement
 
 
 class AstTransformer(Transformer):
-    def IDENTIFIER(self, name):
+    def CNAME(self, name):
         return Idnt(name)
 
 
