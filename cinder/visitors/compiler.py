@@ -68,8 +68,8 @@ class ASTCompiler(Interpreter):
         address = self.symbols[name]
         return self.builder.load(address)
 
-    def Asgn(self, identifier, expression):
-        address = self.builder.alloca(ir.IntType(32), name=identifier)
+    def Asgn(self, identifier, type, expression):
+        address = self.builder.alloca(type.to_ir(), name=identifier)
         self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)
 

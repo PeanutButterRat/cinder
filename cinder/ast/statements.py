@@ -20,8 +20,9 @@ class Asgn(_Statement):
     identifier: str
     expression: _Expression
 
-    def __init__(self, identifier, expression):
+    def __init__(self, identifier, type, expression):
         self.identifier = identifier.name
+        self.type = type
         self.expression = expression
 
 
