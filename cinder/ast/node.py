@@ -1,27 +1,32 @@
 from dataclasses import dataclass
 
+import treelib
 from lark.ast_utils import Ast
-
-INDENT = "  "
 
 
 @dataclass
 class _Node(Ast):
-    def pretty(self, indent=""):
-        string = indent + type(self).__name__
-        indentation = indent + INDENT
+    def pretty(self, tree=treelib.Tree()):
+        def helper(ast, parent=None):
+            tree.create_node(str(ast), id(ast), parent)
+            children = []
 
-        def format(value):
-            if isinstance(value, _Node):
-                return value.pretty(indentation)
-            else:
-                return indentation + str(value)
+            for attribute in vars(ast).values():
+                if isinstance(attribute, _Node):
+                    children.append(attribute)
+                elif isinstance(attribute, list):
+                    children.extend(
+                        [attr for attr in attribute if isinstance(attr, _Node)]
+                    )
 
-        for attribute in vars(self).values():
-            if isinstance(attribute, list):
-                for element in attribute:
-                    string += "\n" + format(element)
-            else:
-                string += "\n" + format(attribute)
+            for child in children:
+                helper(child, id(ast))
 
-        return string
+            return id(ast)
+
+        helper(self)
+
+        return tree
+
+    def __str__(self):
+        return type(self).__name__

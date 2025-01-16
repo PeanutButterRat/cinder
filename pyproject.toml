@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 lark = "^1.2.2"
 llvmlite = "^0.43.0"
+treelib = "^1.7.0"
 
 [tool.poetry.scripts]
 cinder = "cinder.cli:main"
