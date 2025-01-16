@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
+from cinder.ast import AsList, _Node
 from cinder.ast.expressions import _Expression
-from cinder.ast.node import AsList, _Node
 
 
 @dataclass

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from lark.ast_utils import AsList, Ast
+from lark.ast_utils import Ast
 
 INDENT = "  "
 
