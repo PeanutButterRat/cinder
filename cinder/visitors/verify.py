@@ -64,3 +64,27 @@ class ASTVerifier(Visitor):
     Lseq = comparison
     Nteq = comparison
     Equl = comparison
+
+    def Andx(self, left, right):
+        assert isinstance(
+            left.type, bool
+        ), f"left side of boolean and is not boolean expressions ({left.type})"
+        assert isinstance(
+            right.type, bool
+        ), f"right side of boolean and is not boolean expressions ({right.type})"
+        self.current.type = bool()
+
+    def Orxp(self, left, right):
+        assert isinstance(
+            left.type, bool
+        ), f"left side of boolean or is not boolean expressions ({left.type})"
+        assert isinstance(
+            right.type, bool
+        ), f"right side of boolean or is not boolean expressions ({right.type})"
+        self.current.type = bool()
+
+    def Notx(self, expression):
+        assert isinstance(
+            expression.type, bool
+        ), f"expression for boolean not is not boolean expressions ({expression.type})"
+        self.current.type = bool()

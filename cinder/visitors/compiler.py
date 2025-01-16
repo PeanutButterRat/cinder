@@ -125,3 +125,15 @@ class ASTCompiler(Interpreter):
 
     def Equl(self, left, right, type):
         return self.builder.icmp_signed("==", self.visit(left), self.visit(right))
+
+    def Andx(self, left, right, type):
+        result = self.builder.and_(self.visit(left), self.visit(right))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Orxp(self, left, right, type):
+        result = self.builder.or_(self.visit(left), self.visit(right))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Notx(self, expression, type):
+        result = self.builder.not_(self.visit(expression))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))

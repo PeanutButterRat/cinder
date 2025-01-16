@@ -8,15 +8,20 @@ program: statement* -> prgm
 
 block: "{" statement* "}" -> blck
 
-?value: comparison
+?value: logical
+
+?logical: logical "and" comparison -> andx
+       | logical "or" comparison   -> orxp
+       | "not" logical             -> notx
+       | comparison
 
 ?comparison: expression
-           | expression ">" expression  -> grth
-           | expression ">=" expression -> greq
-           | expression "<" expression  -> lsth
-           | expression "<=" expression -> lseq
-           | expression "!=" expression -> nteq
-           | expression "==" expression -> equl
+           | comparison ">" expression  -> grth
+           | comparison ">=" expression -> greq
+           | comparison "<" expression  -> lsth
+           | comparison "<=" expression -> lseq
+           | comparison "!=" expression -> nteq
+           | comparison "==" expression -> equl
 
 ?expression: term
            | expression "+" term -> addn
@@ -27,12 +32,12 @@ block: "{" statement* "}" -> blck
      | term "/" factor -> divn
 
 ?factor: NUMBER  -> numb
-       | LITERAL -> bool
+       | BOOL    -> bool
        | CNAME
-       | "(" expression ")"
+       | "(" logical ")"
 
 TYPE: "i32" | "bool"
-LITERAL: "true" | "false"
+BOOL: "true" | "false"
 
 %import common.NUMBER
 %import common.WS

@@ -90,3 +90,20 @@ class Nteq(_Expression):
 class Equl(_Expression):
     left: _Expression
     right: _Expression
+
+
+@dataclass
+class Andx(_Expression):
+    left: _Expression
+    right: _Expression
+
+
+@dataclass
+class Orxp(_Expression):
+    left: _Expression
+    right: _Expression
+
+
+@dataclass
+class Notx(_Expression):
+    expression: _Expression

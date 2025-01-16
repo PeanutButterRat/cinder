@@ -23,8 +23,6 @@ class Type:
 
 @dataclass
 class i32(Type):
-    format = "%d"
-
     def to_ir(self):
         return ir.IntType(32)
 
