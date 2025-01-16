@@ -16,7 +16,7 @@ def main():
     argparser = argparse.ArgumentParser(
         prog="cinder", description="A low-level systems programming language."
     )
-    argparser.add_argument("source", help="source string to compile")
+    argparser.add_argument("file", help="source file to compile")
     argparser.add_argument(
         "-a",
         "--show-ast",
@@ -36,7 +36,10 @@ def main():
     args = argparser.parse_args()
 
     try:
-        ast = parse(args.source)
+        file = open(args.file, "r")
+        source = file.read()
+        file.close()
+        ast = parse(source)
 
         if args.show_ast:
             print(ast.pretty())
