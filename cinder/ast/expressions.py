@@ -9,40 +9,137 @@ class _Expression(_Node):
 
 
 @dataclass
-class Addn(_Expression):
+class Addition(_Expression):
     left: _Expression
     right: _Expression
 
+    def __str__(self):
+        return "+"
+
 
 @dataclass
-class Subn(_Expression):
+class Subtraction(_Expression):
     left: _Expression
     right: _Expression
 
+    def __str__(self):
+        return "-"
+
 
 @dataclass
-class Muln(_Expression):
+class Multiplication(_Expression):
     left: _Expression
     right: _Expression
 
+    def __str__(self):
+        return "*"
+
 
 @dataclass
-class Divn(_Expression):
+class Division(_Expression):
     left: _Expression
     right: _Expression
 
+    def __str__(self):
+        return "/"
+
 
 @dataclass
-class Numb(_Expression):
+class Number(_Expression):
     value: int
 
     def __init__(self, number):
         self.value = int(number)
 
+    def __str__(self):
+        return str(self.value)
+
 
 @dataclass
-class Idnt(_Node):
+class Boolean(_Expression):
+    value: bool
+
+    def __init__(self, bool):
+        self.value = bool == "true"
+
+    def __str__(self):
+        return str(self.value)
+
+
+@dataclass
+class Identifier(_Node):
     name: str
 
     def __init__(self, name):
         self.name = name.value
+
+
+@dataclass
+class GreaterThan(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return ">"
+
+
+@dataclass
+class GreaterEqual(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return ">="
+
+
+@dataclass
+class LessThan(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return "<"
+
+
+@dataclass
+class LessEqual(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return "<="
+
+
+@dataclass
+class NotEqual(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return "!="
+
+
+@dataclass
+class Equal(_Expression):
+    left: _Expression
+    right: _Expression
+
+    def __str__(self):
+        return "=="
+
+
+@dataclass
+class And(_Expression):
+    left: _Expression
+    right: _Expression
+
+
+@dataclass
+class Or(_Expression):
+    left: _Expression
+    right: _Expression
+
+
+@dataclass
+class Not(_Expression):
+    expression: _Expression

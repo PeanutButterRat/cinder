@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
+from cinder.ast import AsList, _Node
 from cinder.ast.expressions import _Expression
-from cinder.ast.node import AsList, _Node
 
 
 @dataclass
@@ -11,30 +11,37 @@ class _Statement(_Node):
 
 
 @dataclass
-class Prnt(_Statement):
+class Print(_Statement):
     expression: _Expression
 
 
 @dataclass
-class Asgn(_Statement):
+class Assign(_Statement):
     identifier: str
     expression: _Expression
 
-    def __init__(self, identifier, expression):
+    def __init__(self, identifier, type, expression):
         self.identifier = identifier.name
+        self.type = type
         self.expression = expression
 
+    def __str__(self):
+        return f"Assign ({self.identifier}: {self.type})"
+
 
 @dataclass
-class Blck(_Statement, AsList):
+class Block(_Statement, AsList):
     statements: List[_Statement]
 
+    def __str__(self):
+        return f"Block ({len(self.statements)})"
+
 
 @dataclass
-class Ifel(_Statement, AsList):
+class IfElse(_Statement, AsList):
     expressions: List[_Expression]
-    blocks: List[Blck]
-    otherwise: Blck
+    blocks: List[Block]
+    otherwise: Block
 
     def __init__(self, args):
         self.expressions = []
@@ -45,3 +52,6 @@ class Ifel(_Statement, AsList):
             self.blocks.append(args.pop(0))
 
         self.otherwise = args.pop() if args else None
+
+    def __str__(self):
+        return "If" if self.otherwise is None else "If-Else"

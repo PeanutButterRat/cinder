@@ -1,7 +1,7 @@
 import argparse
 import os
 import subprocess
-import sys
+import traceback
 from tempfile import NamedTemporaryFile
 
 from llvmlite import binding
@@ -16,10 +16,9 @@ def main():
     argparser = argparse.ArgumentParser(
         prog="cinder", description="A low-level systems programming language."
     )
-
     argparser.add_argument("source", help="source string to compile")
     argparser.add_argument(
-        "-s",
+        "-a",
         "--show-ast",
         action="store_true",
         help="show the abstract syntax tree (AST) before attempting to compile",
@@ -27,6 +26,13 @@ def main():
     argparser.add_argument(
         "-t", "--target", help="platform to compile for specified as a target triple"
     )
+    argparser.add_argument(
+        "-s",
+        "--stack-trace",
+        help="print the stack trace if an exception is raised",
+        action="store_true",
+    )
+
     args = argparser.parse_args()
 
     try:
@@ -39,7 +45,10 @@ def main():
         compile(ast, target)
 
     except Exception as e:
-        print(f"Error: {e}")
+        if args.stack_trace:
+            traceback.print_exc()
+        else:
+            print(f"Error: {e}")
 
 
 def parse(source):

@@ -34,7 +34,7 @@ class ASTCompiler(Interpreter):
 
         self.symbols["printf"] = printf
 
-    def Prgm(self, statements):
+    def Program(self, statements):
         for statement in statements:
             self.visit(statement)
 
@@ -42,38 +42,41 @@ class ASTCompiler(Interpreter):
 
         return self.module
 
-    def Prnt(self, expression):
+    def Print(self, expression):
         printf = self.symbols["printf"]
         format = self.builder.bitcast(
             self.module.get_global("format"), ir.PointerType(ir.IntType(8))
         )
         return self.builder.call(printf, [format, self.visit(expression)])
 
-    def Addn(self, left, right, type):
+    def Addition(self, left, right, type):
         return self.builder.add(self.visit(left), self.visit(right))
 
-    def Subn(self, left, right, type):
+    def Subtraction(self, left, right, type):
         return self.builder.sub(self.visit(left), self.visit(right))
 
-    def Muln(self, left, right, type):
+    def Multiplication(self, left, right, type):
         return self.builder.mul(self.visit(left), self.visit(right))
 
-    def Divn(self, left, right, type):
+    def Division(self, left, right, type):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
-    def Numb(self, value, type):
-        return ir.Constant(ir.IntType(32), value)
+    def Number(self, value, type):
+        return ir.Constant(type.to_ir(), value)
 
-    def Idnt(self, name, type):
+    def Boolean(self, boolean, type):
+        return ir.Constant(type.to_ir(), 1 if boolean else 0)
+
+    def Identifier(self, name, type):
         address = self.symbols[name]
         return self.builder.load(address)
 
-    def Asgn(self, identifier, expression):
-        address = self.builder.alloca(ir.IntType(32), name=identifier)
+    def Assign(self, identifier, type, expression):
+        address = self.builder.alloca(type.to_ir(), name=identifier)
         self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)
 
-    def Blck(self, statements):
+    def Block(self, statements):
         self.symbols = self.symbols.push()
 
         for statement in statements:
@@ -81,7 +84,7 @@ class ASTCompiler(Interpreter):
 
         self.symbols = self.symbols.pop()
 
-    def Ifel(self, conditions, blocks, otherwise):
+    def IfElse(self, conditions, blocks, otherwise):
         value = self.visit(conditions[0])
         predicate = self.builder.icmp_signed(
             "!=", value, ir.Constant(ir.IntType(32), 0)
@@ -92,7 +95,7 @@ class ASTCompiler(Interpreter):
                 with then:
                     self.visit(blocks[0])
                 with other:
-                    self.Ifel(conditions[1:], blocks[1:], otherwise)
+                    self.IfElse(conditions[1:], blocks[1:], otherwise)
 
         elif otherwise:
             with self.builder.if_else(predicate) as (then, other):
@@ -104,3 +107,33 @@ class ASTCompiler(Interpreter):
         else:
             with self.builder.if_then(predicate):
                 self.visit(blocks[0])
+
+    def GreaterThan(self, left, right, type):
+        return self.builder.icmp_signed(">", self.visit(left), self.visit(right))
+
+    def GreaterEqual(self, left, right, type):
+        return self.builder.icmp_signed(">=", self.visit(left), self.visit(right))
+
+    def LessThan(self, left, right, type):
+        return self.builder.icmp_signed("<", self.visit(left), self.visit(right))
+
+    def LessEqual(self, left, right, type):
+        return self.builder.icmp_signed("<=", self.visit(left), self.visit(right))
+
+    def NotEqual(self, left, right, type):
+        return self.builder.icmp_signed("!=", self.visit(left), self.visit(right))
+
+    def Equal(self, left, right, type):
+        return self.builder.icmp_signed("==", self.visit(left), self.visit(right))
+
+    def And(self, left, right, type):
+        result = self.builder.and_(self.visit(left), self.visit(right))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Or(self, left, right, type):
+        result = self.builder.or_(self.visit(left), self.visit(right))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Not(self, expression, type):
+        result = self.builder.not_(self.visit(expression))
+        return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))

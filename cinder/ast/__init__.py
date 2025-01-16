@@ -9,15 +9,19 @@ from cinder.ast.expressions import _Expression
 from cinder.ast.node import _Node
 from cinder.ast.statements import *
 from cinder.ast.statements import _Statement
+from cinder.ast.type import Type
 
 
 class AstTransformer(Transformer):
-    def IDENTIFIER(self, name):
-        return Idnt(name)
+    def CNAME(self, name):
+        return Identifier(name)
+
+    def TYPE(self, type):
+        return Type.from_string(type)
 
 
 @dataclass
-class Prgm(_Node, AsList):
+class Program(_Node, AsList):
     statements: List[_Statement]
 
 
