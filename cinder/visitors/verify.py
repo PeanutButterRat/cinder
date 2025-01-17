@@ -1,5 +1,5 @@
 from cinder.ast import _Node
-from cinder.ast.type import *
+from cinder.ast.types import *
 from cinder.symbols import Symbols
 from cinder.visitors.visitor import Interpreter, Visitor
 
