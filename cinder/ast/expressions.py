@@ -9,7 +9,7 @@ class _Expression(_Node):
 
 
 @dataclass
-class Addn(_Expression):
+class Addition(_Expression):
     left: _Expression
     right: _Expression
 
@@ -18,7 +18,7 @@ class Addn(_Expression):
 
 
 @dataclass
-class Subn(_Expression):
+class Subtraction(_Expression):
     left: _Expression
     right: _Expression
 
@@ -27,7 +27,7 @@ class Subn(_Expression):
 
 
 @dataclass
-class Muln(_Expression):
+class Multiplication(_Expression):
     left: _Expression
     right: _Expression
 
@@ -36,7 +36,7 @@ class Muln(_Expression):
 
 
 @dataclass
-class Divn(_Expression):
+class Division(_Expression):
     left: _Expression
     right: _Expression
 
@@ -45,7 +45,7 @@ class Divn(_Expression):
 
 
 @dataclass
-class Numb(_Expression):
+class Number(_Expression):
     value: int
 
     def __init__(self, number):
@@ -56,7 +56,7 @@ class Numb(_Expression):
 
 
 @dataclass
-class Bool(_Expression):
+class Boolean(_Expression):
     value: bool
 
     def __init__(self, bool):
@@ -67,7 +67,7 @@ class Bool(_Expression):
 
 
 @dataclass
-class Idnt(_Node):
+class Identifier(_Node):
     name: str
 
     def __init__(self, name):
@@ -75,7 +75,7 @@ class Idnt(_Node):
 
 
 @dataclass
-class Grth(_Expression):
+class GreaterThan(_Expression):
     left: _Expression
     right: _Expression
 
@@ -84,7 +84,7 @@ class Grth(_Expression):
 
 
 @dataclass
-class Greq(_Expression):
+class GreaterEqual(_Expression):
     left: _Expression
     right: _Expression
 
@@ -93,7 +93,7 @@ class Greq(_Expression):
 
 
 @dataclass
-class Lsth(_Expression):
+class LessThan(_Expression):
     left: _Expression
     right: _Expression
 
@@ -102,7 +102,7 @@ class Lsth(_Expression):
 
 
 @dataclass
-class Lseq(_Expression):
+class LessEqual(_Expression):
     left: _Expression
     right: _Expression
 
@@ -111,7 +111,7 @@ class Lseq(_Expression):
 
 
 @dataclass
-class Nteq(_Expression):
+class NotEqual(_Expression):
     left: _Expression
     right: _Expression
 
@@ -120,7 +120,7 @@ class Nteq(_Expression):
 
 
 @dataclass
-class Equl(_Expression):
+class Equal(_Expression):
     left: _Expression
     right: _Expression
 
@@ -129,26 +129,17 @@ class Equl(_Expression):
 
 
 @dataclass
-class Andx(_Expression):
+class And(_Expression):
     left: _Expression
     right: _Expression
 
-    def __str__(self):
-        return "And"
-
 
 @dataclass
-class Orxp(_Expression):
+class Or(_Expression):
     left: _Expression
     right: _Expression
 
-    def __str__(self):
-        return "Or"
-
 
 @dataclass
-class Notx(_Expression):
+class Not(_Expression):
     expression: _Expression
-
-    def __str__(self):
-        return "Not"

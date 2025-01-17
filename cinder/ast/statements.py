@@ -11,15 +11,12 @@ class _Statement(_Node):
 
 
 @dataclass
-class Prnt(_Statement):
+class Print(_Statement):
     expression: _Expression
-
-    def __str__(self):
-        return "Print"
 
 
 @dataclass
-class Asgn(_Statement):
+class Assign(_Statement):
     identifier: str
     expression: _Expression
 
@@ -33,7 +30,7 @@ class Asgn(_Statement):
 
 
 @dataclass
-class Blck(_Statement, AsList):
+class Block(_Statement, AsList):
     statements: List[_Statement]
 
     def __str__(self):
@@ -41,10 +38,10 @@ class Blck(_Statement, AsList):
 
 
 @dataclass
-class Ifel(_Statement, AsList):
+class IfElse(_Statement, AsList):
     expressions: List[_Expression]
-    blocks: List[Blck]
-    otherwise: Blck
+    blocks: List[Block]
+    otherwise: Block
 
     def __init__(self, args):
         self.expressions = []

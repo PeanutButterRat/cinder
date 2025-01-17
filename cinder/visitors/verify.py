@@ -9,43 +9,43 @@ class ASTVerifier(Visitor):
         super().__init__()
         self.symbols = Symbols()
 
-    def Asgn(self, identifier, type, expression):
+    def Assign(self, identifier, type, expression):
         assert (
             type == expression.type
         ), f"mismatched types in assignment ({type}, {expression.type})"
         self.symbols[identifier] = expression.type
 
-    def Addn(self, left, right):
+    def Addition(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in addition expression ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Subn(self, left, right):
+    def Subtraction(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in subtraction expression ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Muln(self, left, right):
+    def Multiplication(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in multiplication expression ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Divn(self, left, right):
+    def Division(self, left, right):
         assert (
             left.type == right.type
         ), f"mismatched types in division expression ({left.type}, {right.type})"
         self.current.type = left.type
 
-    def Numb(self, number):
+    def Number(self, number):
         self.current.type = i32()
 
-    def Bool(self, boolean):
+    def Boolean(self, boolean):
         self.current.type = bool()
 
-    def Idnt(self, name):
+    def Identifier(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]
 
@@ -58,14 +58,14 @@ class ASTVerifier(Visitor):
         ), f"right side of comparison is not integer expession ({right.type})"
         self.current.type = bool()
 
-    Grth = comparison
-    Greq = comparison
-    Lsth = comparison
-    Lseq = comparison
-    Nteq = comparison
-    Equl = comparison
+    GreaterThan = comparison
+    GreaterEqual = comparison
+    LessThan = comparison
+    LessEqual = comparison
+    NotEqual = comparison
+    Equal = comparison
 
-    def Andx(self, left, right):
+    def And(self, left, right):
         assert isinstance(
             left.type, bool
         ), f"left side of boolean and is not boolean expressions ({left.type})"
@@ -74,7 +74,7 @@ class ASTVerifier(Visitor):
         ), f"right side of boolean and is not boolean expressions ({right.type})"
         self.current.type = bool()
 
-    def Orxp(self, left, right):
+    def Or(self, left, right):
         assert isinstance(
             left.type, bool
         ), f"left side of boolean or is not boolean expressions ({left.type})"
@@ -83,7 +83,7 @@ class ASTVerifier(Visitor):
         ), f"right side of boolean or is not boolean expressions ({right.type})"
         self.current.type = bool()
 
-    def Notx(self, expression):
+    def Not(self, expression):
         assert isinstance(
             expression.type, bool
         ), f"expression for boolean not is not boolean expressions ({expression.type})"

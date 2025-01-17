@@ -1,38 +1,38 @@
 ?start: program
 
-program: statement* -> prgm
+program: statement* -> program
 
-?statement: "let" CNAME ":" TYPE "=" value ";"                    -> asgn
-          | "print" value ";"                                     -> prnt
-          | "if" value block ("elif" value block)* ["else" block] -> ifel
+?statement: "let" CNAME ":" TYPE "=" value ";"                    -> assign
+          | "print" value ";"                                     -> print
+          | "if" value block ("elif" value block)* ["else" block] -> if_else
 
-block: "{" statement* "}" -> blck
+block: "{" statement* "}" -> block
 
 ?value: logical
 
-?logical: logical "and" comparison -> andx
-       | logical "or" comparison   -> orxp
-       | "not" logical             -> notx
+?logical: logical "and" comparison -> and
+       | logical "or" comparison   -> or
+       | "not" logical             -> not
        | comparison
 
 ?comparison: expression
-           | comparison ">" expression  -> grth
-           | comparison ">=" expression -> greq
-           | comparison "<" expression  -> lsth
-           | comparison "<=" expression -> lseq
-           | comparison "!=" expression -> nteq
-           | comparison "==" expression -> equl
+           | comparison ">" expression  -> greater_than
+           | comparison ">=" expression -> greater_equal
+           | comparison "<" expression  -> less_than
+           | comparison "<=" expression -> less_equal
+           | comparison "!=" expression -> not_equal
+           | comparison "==" expression -> equal
 
 ?expression: term
-           | expression "+" term -> addn
-           | expression "-" term -> subn
+           | expression "+" term -> addition
+           | expression "-" term -> subtraction
 
 ?term: factor
-     | term "*" factor -> muln
-     | term "/" factor -> divn
+     | term "*" factor -> multiplication
+     | term "/" factor -> division
 
-?factor: NUMBER  -> numb
-       | BOOL    -> bool
+?factor: NUMBER  -> number
+       | BOOL    -> boolean
        | CNAME
        | "(" logical ")"
 

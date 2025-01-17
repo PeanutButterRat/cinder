@@ -14,18 +14,15 @@ from cinder.ast.type import Type
 
 class AstTransformer(Transformer):
     def CNAME(self, name):
-        return Idnt(name)
+        return Identifier(name)
 
     def TYPE(self, type):
         return Type.from_string(type)
 
 
 @dataclass
-class Prgm(_Node, AsList):
+class Program(_Node, AsList):
     statements: List[_Statement]
-
-    def __str__(self):
-        return "Program"
 
 
 module = sys.modules[__name__]
