@@ -14,6 +14,9 @@ class _Statement(_Node):
 class Prnt(_Statement):
     expression: _Expression
 
+    def __str__(self):
+        return "Print"
+
 
 @dataclass
 class Asgn(_Statement):
@@ -25,10 +28,16 @@ class Asgn(_Statement):
         self.type = type
         self.expression = expression
 
+    def __str__(self):
+        return f"Assign ({self.identifier}: {self.type})"
+
 
 @dataclass
 class Blck(_Statement, AsList):
     statements: List[_Statement]
+
+    def __str__(self):
+        return f"Block ({len(self.statements)})"
 
 
 @dataclass
@@ -46,3 +55,6 @@ class Ifel(_Statement, AsList):
             self.blocks.append(args.pop(0))
 
         self.otherwise = args.pop() if args else None
+
+    def __str__(self):
+        return "If" if self.otherwise is None else "If-Else"

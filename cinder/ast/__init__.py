@@ -24,6 +24,9 @@ class AstTransformer(Transformer):
 class Prgm(_Node, AsList):
     statements: List[_Statement]
 
+    def __str__(self):
+        return "Program"
+
 
 module = sys.modules[__name__]
 transformer = create_transformer(module, AstTransformer())
