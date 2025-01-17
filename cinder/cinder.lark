@@ -5,14 +5,14 @@ program: function* -> program
 function: "fn" CNAME "()" block
 call: CNAME "()"
 
-?statement: "let" CNAME ":" TYPE "=" value ";"                    -> assign
-          | "print" value ";"                                     -> print
-          | "if" value block ("elif" value block)* ["else" block] -> if_else
+?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> assign
+          | "print" expression ";"                                          -> print
+          | "if" expression block ("elif" expression block)* ["else" block] -> if_else
           | call ";"
 
 block: "{" statement* "}" -> block
 
-?value: logical
+?expression: logical
 
 ?logical: logical "and" comparison -> and
        | logical "or" comparison   -> or
