@@ -143,3 +143,10 @@ class Or(_Expression):
 @dataclass
 class Not(_Expression):
     expression: _Expression
+
+
+class Call(_Expression):
+    name: str
+
+    def __init__(self, identifier):
+        self.name = identifier.name

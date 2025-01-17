@@ -71,7 +71,8 @@ def compile(ast, target="default"):
         target = Target.from_triple(target)
 
     machine = target.create_target_machine(codemodel="default")
-    module = binding.parse_assembly(str(module))
+    assembly = str(module)
+    module = binding.parse_assembly(assembly)
 
     with NamedTemporaryFile(delete=False) as file:
         file.write(machine.emit_object(module))

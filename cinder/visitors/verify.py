@@ -88,3 +88,9 @@ class ASTVerifier(Visitor):
             expression.type, bool
         ), f"expression for boolean not is not boolean expressions ({expression.type})"
         self.current.type = bool()
+
+    def Function(self, name, body):
+        pass
+
+    def Call(self, name):
+        pass

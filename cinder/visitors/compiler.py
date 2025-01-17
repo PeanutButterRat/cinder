@@ -10,10 +10,7 @@ class ASTCompiler(Interpreter):
         super().__init__()
         self.symbols = Symbols()
         self.module = ir.Module()
-
-        entry = ir.Function(self.module, ir.FunctionType(ir.IntType(32), []), "main")
-        block = entry.append_basic_block()
-        self.builder = ir.IRBuilder(block)
+        self.builder = None
 
         printf = ir.Function(
             self.module,
@@ -34,11 +31,9 @@ class ASTCompiler(Interpreter):
 
         self.symbols["printf"] = printf
 
-    def Program(self, statements):
-        for statement in statements:
-            self.visit(statement)
-
-        self.builder.ret(ir.Constant(ir.IntType(32), 0))
+    def Program(self, functions):
+        for function in functions:
+            self.visit(function)
 
         return self.module
 
@@ -137,3 +132,16 @@ class ASTCompiler(Interpreter):
     def Not(self, expression, type):
         result = self.builder.not_(self.visit(expression))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Function(self, name, body):
+        function = ir.Function(self.module, ir.FunctionType(ir.IntType(32), []), name)
+        block = function.append_basic_block()
+        self.builder = ir.IRBuilder(block)
+        self.symbols[name] = function
+
+        self.visit(body)
+        self.builder.ret(ir.Constant(ir.IntType(32), 0))
+
+    def Call(self, name):
+        function = self.symbols[name]
+        return self.builder.call(function, [])

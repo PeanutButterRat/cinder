@@ -22,7 +22,7 @@ class AstTransformer(Transformer):
 
 @dataclass
 class Program(_Node, AsList):
-    statements: List[_Statement]
+    functions: List[Function]
 
 
 module = sys.modules[__name__]

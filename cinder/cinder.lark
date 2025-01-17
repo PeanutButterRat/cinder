@@ -1,10 +1,14 @@
 ?start: program
 
-program: statement* -> program
+program: function* -> program
+
+function: "fn" CNAME "()" block
+call: CNAME "()"
 
 ?statement: "let" CNAME ":" TYPE "=" value ";"                    -> assign
           | "print" value ";"                                     -> print
           | "if" value block ("elif" value block)* ["else" block] -> if_else
+          | call ";"
 
 block: "{" statement* "}" -> block
 
@@ -35,6 +39,7 @@ block: "{" statement* "}" -> block
        | BOOL    -> boolean
        | CNAME
        | "(" logical ")"
+       | call
 
 TYPE: "i32" | "bool"
 BOOL: "true" | "false"

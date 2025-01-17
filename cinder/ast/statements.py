@@ -55,3 +55,13 @@ class IfElse(_Statement, AsList):
 
     def __str__(self):
         return "If" if self.otherwise is None else "If-Else"
+
+
+@dataclass
+class Function(_Node):
+    name: str
+    body: Block
+
+    def __init__(self, identifier, body):
+        self.name = identifier.name
+        self.body = body
