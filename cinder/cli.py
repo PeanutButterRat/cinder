@@ -9,7 +9,7 @@ from llvmlite.binding import Target
 
 from cinder import parser
 from cinder.ast import transformer
-from cinder.visitors import ASTCompiler, ASTVerifier
+from cinder.visitors import ASTCompiler, TreeVerifier
 
 
 def main():
@@ -39,13 +39,13 @@ def main():
         file = open(args.file, "r")
         source = file.read()
         file.close()
-        ast = parse(source)
+        ast, globals = parse(source)
 
         if args.show_ast:
             print(ast.pretty())
 
         target = args.target if args.target else "default"
-        compile(ast, target)
+        compile(ast, globals, target)
 
     except Exception as e:
         if args.stack_trace:
@@ -57,12 +57,12 @@ def main():
 def parse(source):
     cst = parser.parse(source)
     ast = transformer.transform(cst)
-    ASTVerifier().visit(ast)
-    return ast
+    globals = TreeVerifier().visit(ast)
+    return ast, globals
 
 
-def compile(ast, target="default"):
-    module = ASTCompiler().visit(ast)
+def compile(ast, globals, target="default"):
+    module = ASTCompiler(globals).visit(ast)
 
     binding.initialize()
     binding.initialize_native_target()

@@ -12,8 +12,8 @@ from cinder.cli import compile, parse
     ],
 )
 def test_compilation(source, stdout):
-    ast = parse(source)
-    compile(ast)
+    ast, globals = parse(source)
+    compile(ast, globals)
 
     process = subprocess.run(["build/output.exe"], capture_output=True, text=True)
 

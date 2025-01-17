@@ -4,7 +4,7 @@ from lark import Lark
 from cinder import GRAMMAR
 from cinder.ast import transformer
 from cinder.ast.node import _Node
-from cinder.visitors.verify import ASTVerifier
+from cinder.visitors.verify import TreeVerifier
 
 
 @pytest.mark.parametrize(
@@ -29,5 +29,5 @@ def test_grammar_rule(rule, strings):
     for string in strings:
         cst = parser.parse(string)
         ast = transformer.transform(cst)
-        ASTVerifier().visit(ast)
+        TreeVerifier().visit(ast)
         assert isinstance(ast, _Node)

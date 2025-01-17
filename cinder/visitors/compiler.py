@@ -6,9 +6,9 @@ from cinder.visitors.visitor import Interpreter
 
 
 class ASTCompiler(Interpreter):
-    def __init__(self):
+    def __init__(self, globals):
         super().__init__()
-        self.symbols = Symbols()
+        self.symbols = globals
         self.module = ir.Module()
         self.builder = None
 
@@ -32,6 +32,11 @@ class ASTCompiler(Interpreter):
         self.symbols["printf"] = printf
 
     def Program(self, functions):
+        for function in functions:
+            name = function.name
+            type = self.symbols[name].to_ir()
+            self.symbols[name] = ir.Function(self.module, type, name)
+
         for function in functions:
             self.visit(function)
 
@@ -134,10 +139,9 @@ class ASTCompiler(Interpreter):
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
     def Function(self, name, body):
-        function = ir.Function(self.module, ir.FunctionType(ir.IntType(32), []), name)
+        function = self.symbols[name]
         block = function.append_basic_block()
         self.builder = ir.IRBuilder(block)
-        self.symbols[name] = function
 
         self.visit(body)
         self.builder.ret(ir.Constant(ir.IntType(32), 0))

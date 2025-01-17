@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from llvmlite import ir
 
@@ -31,3 +32,11 @@ class i32(Type):
 class bool(Type):
     def to_ir(self):
         return ir.IntType(1)
+
+
+@dataclass
+class Function(Type):
+    return_type: Type
+
+    def to_ir(self):
+        return ir.FunctionType(self.return_type.to_ir(), [])
