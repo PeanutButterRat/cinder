@@ -34,23 +34,23 @@ class ExpressionVerifier(Visitor):
         self.current.type = left.type
 
     def Number(self, number):
-        self.current.type = i32()
+        self.current.type = Integer(32)
 
     def Boolean(self, boolean):
-        self.current.type = bool()
+        self.current.type = Boolean()
 
     def Identifier(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]
 
     def comparison(self, left, right):
-        assert isinstance(
-            left.type, i32
+        assert left.type == Integer(
+            32
         ), f"left side of comparison is not integer expession ({left.type})"
-        assert isinstance(
-            right.type, i32
+        assert right.type == Integer(
+            32
         ), f"right side of comparison is not integer expession ({right.type})"
-        self.current.type = bool()
+        self.current.type = Boolean()
 
     GreaterThan = comparison
     GreaterEqual = comparison
@@ -60,28 +60,28 @@ class ExpressionVerifier(Visitor):
     Equal = comparison
 
     def And(self, left, right):
-        assert isinstance(
-            left.type, bool
+        assert (
+            left.type == Boolean()
         ), f"left side of boolean and is not boolean expressions ({left.type})"
-        assert isinstance(
-            right.type, bool
+        assert (
+            right.type == Boolean()
         ), f"right side of boolean and is not boolean expressions ({right.type})"
-        self.current.type = bool()
+        self.current.type = Boolean()
 
     def Or(self, left, right):
-        assert isinstance(
-            left.type, bool
+        assert (
+            left.type == Boolean()
         ), f"left side of boolean or is not boolean expressions ({left.type})"
-        assert isinstance(
-            right.type, bool
+        assert (
+            right.type == Boolean()
         ), f"right side of boolean or is not boolean expressions ({right.type})"
-        self.current.type = bool()
+        self.current.type = Boolean()
 
     def Not(self, expression):
-        assert isinstance(
-            expression.type, bool
+        assert (
+            expression.type == Boolean()
         ), f"expression for boolean not is not boolean expressions ({expression.type})"
-        self.current.type = bool()
+        self.current.type = Boolean()
 
     def Call(self, name):
         pass
@@ -100,7 +100,7 @@ class TreeVerifier(Interpreter):
             if name in self.symbols:
                 raise RuntimeError(f"function previously defined ({name})")
             else:
-                self.symbols[name] = Function(i32())
+                self.symbols[name] = Function(Integer(32))
 
         for function in functions:
             self.visit(function)
@@ -122,7 +122,7 @@ class TreeVerifier(Interpreter):
         for condition in conditions:
             self.verifier.visit(condition)
             assert (
-                condition.type == bool()
+                condition.type == Boolean()
             ), "condition for if-else statement is not boolean expression"
 
         for block in blocks:

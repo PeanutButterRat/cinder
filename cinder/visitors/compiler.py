@@ -34,7 +34,7 @@ class ASTCompiler(Interpreter):
     def Program(self, functions):
         for function in functions:
             name = function.name
-            type = self.symbols[name].to_ir()
+            type = self.symbols[name].to_llvm()
             self.symbols[name] = ir.Function(self.module, type, name)
 
         for function in functions:
@@ -62,17 +62,17 @@ class ASTCompiler(Interpreter):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
     def Number(self, value, type):
-        return ir.Constant(type.to_ir(), value)
+        return ir.Constant(type.to_llvm(), value)
 
     def Boolean(self, boolean, type):
-        return ir.Constant(type.to_ir(), 1 if boolean else 0)
+        return ir.Constant(type.to_llvm(), 1 if boolean else 0)
 
     def Identifier(self, name, type):
         address = self.symbols[name]
         return self.builder.load(address)
 
     def Assign(self, identifier, type, expression):
-        address = self.builder.alloca(type.to_ir(), name=identifier)
+        address = self.builder.alloca(type.to_llvm(), name=identifier)
         self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)
 

@@ -1,36 +1,35 @@
 from dataclasses import dataclass
-from typing import List
 
 from llvmlite import ir
 
 
 @dataclass
 class Type:
-    def to_ir(self):
-        pass
-
     @staticmethod
-    def from_string(name):
-        symbols = globals()
-
-        if name in symbols and isinstance(symbols[name], type):
-            return symbols[name]()
+    def from_string(type):
+        if type == "i32":
+            return Integer(32)
+        elif type == "bool":
+            return Boolean()
         else:
-            raise ValueError(f"unknown type ({name})")
+            raise ValueError(f"unknown type ({type})")
 
-    def __str__(self):
-        return type(self).__name__
-
-
-@dataclass
-class i32(Type):
-    def to_ir(self):
-        return ir.IntType(32)
+    def to_llvm(self):
+        raise NotImplementedError
 
 
 @dataclass
-class bool(Type):
-    def to_ir(self):
+class Integer(Type):
+    size: int
+    signed: bool = True
+
+    def to_llvm(self):
+        return ir.IntType(self.size)
+
+
+@dataclass
+class Boolean(Type):
+    def to_llvm(self):
         return ir.IntType(1)
 
 
@@ -38,5 +37,5 @@ class bool(Type):
 class Function(Type):
     return_type: Type
 
-    def to_ir(self):
-        return ir.FunctionType(self.return_type.to_ir(), [])
+    def to_llvm(self):
+        return ir.FunctionType(self.return_type.to_llvm(), [])
