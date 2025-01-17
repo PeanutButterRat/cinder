@@ -19,17 +19,17 @@ block: "{" statement* "}" -> block
        | "not" logical             -> not
        | comparison
 
-?comparison: expression
-           | comparison ">" expression  -> greater_than
-           | comparison ">=" expression -> greater_equal
-           | comparison "<" expression  -> less_than
-           | comparison "<=" expression -> less_equal
-           | comparison "!=" expression -> not_equal
-           | comparison "==" expression -> equal
+?comparison: arithmetic
+           | comparison ">" arithmetic  -> greater_than
+           | comparison ">=" arithmetic -> greater_equal
+           | comparison "<" arithmetic  -> less_than
+           | comparison "<=" arithmetic -> less_equal
+           | comparison "!=" arithmetic -> not_equal
+           | comparison "==" arithmetic -> equal
 
-?expression: term
-           | expression "+" term -> addition
-           | expression "-" term -> subtraction
+?arithmetic: term
+           | arithmetic "+" term -> addition
+           | arithmetic "-" term -> subtraction
 
 ?term: factor
      | term "*" factor -> multiplication

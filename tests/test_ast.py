@@ -11,7 +11,7 @@ from cinder.visitors.verify import ASTVerifier
     "rule, strings",
     [
         [
-            "expression",
+            "arithmetic",
             ["5 + 2 * (1 / 5)", "((((2)) + 3))/5", "1 * (2) + 3 / (5)"],
         ],
         [

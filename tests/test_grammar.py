@@ -8,7 +8,7 @@ from cinder import GRAMMAR
     "rule, valid, invalid",
     [
         [
-            "expression",
+            "arithmetic",
             ["5 + 2 * (1 / 5)", "((((2)) + 3))/5", "1 * (2) + 3 / (5)"],
             ["5 + + 2", "(((2)) + 3))", "(2 / (3 + 5)"],
         ],
