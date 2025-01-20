@@ -33,21 +33,24 @@ class ExpressionVerifier(Visitor):
         assert name in self.symbols, f"undefined identifier ({name})"
         self.current.type = self.symbols[name]
 
-    def comparison(self, left, right):
-        assert left.type == Integer(
-            32
-        ), f"left side of comparison is not integer expession ({left.type})"
-        assert right.type == Integer(
-            32
-        ), f"right side of comparison is not integer expession ({right.type})"
-        self.current.type = Boolean()
+    def comparison(operator):
+        def verification(self, left, right):
+            assert left.type == Integer(
+                32
+            ), f"left side of comparison ({operator}) is not an integer expession ({left.type})"
+            assert right.type == Integer(
+                32
+            ), f"right side of comparison ({operator}) is not an integer expession ({right.type})"
+            self.current.type = Boolean()
 
-    GreaterThan = comparison
-    GreaterEqual = comparison
-    LessThan = comparison
-    LessEqual = comparison
-    NotEqual = comparison
-    Equal = comparison
+        return verification
+
+    GreaterThan = comparison(">")
+    GreaterEqual = comparison(">=")
+    LessThan = comparison("<")
+    LessEqual = comparison("<=")
+    NotEqual = comparison("!=")
+    Equal = comparison("==")
 
     def And(self, left, right):
         assert (
