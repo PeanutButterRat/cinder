@@ -9,7 +9,7 @@ from llvmlite.binding import Target
 
 from cinder import parser
 from cinder.ast import transformer
-from cinder.visitor import ASTCompiler, TreeVerifier
+from cinder.visitor import TreeCompiler, TreeVerifier
 
 
 def main():
@@ -62,7 +62,7 @@ def parse(source):
 
 
 def compile(ast, globals, target="default"):
-    module = ASTCompiler(globals).visit(ast)
+    module = TreeCompiler(globals).visit(ast)
 
     binding.initialize()
     binding.initialize_native_target()

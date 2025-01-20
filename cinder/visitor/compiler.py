@@ -5,7 +5,7 @@ from cinder.symbols import Symbols
 from cinder.visitor.visitor import Interpreter
 
 
-class ASTCompiler(Interpreter):
+class TreeCompiler(Interpreter):
     def __init__(self, globals):
         super().__init__()
         self.symbols = globals
