@@ -48,5 +48,7 @@ BOOL: "true" | "false"
 %import common.NUMBER
 %import common.WS
 %import common.CNAME
+%import common.CPP_COMMENT
 
 %ignore WS
+%ignore CPP_COMMENT
