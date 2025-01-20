@@ -9,19 +9,19 @@ class ExpressionVerifier(Visitor):
         super().__init__()
         self.symbols = symbols
 
-    def arithmetic(operation):
+    def arithmetic(operator):
         def verification(self, left, right):
             assert (
                 left.type == right.type
-            ), f"mismatched types in {operation} expression ({left.type}, {right.type})"
+            ), f"mismatched types in arithmetic expression ({left.type} {operator} {right.type})"
             self.current.type = left.type
 
         return verification
 
-    Addition = arithmetic("addition")
-    Subtraction = arithmetic("subtraction")
-    Multiplication = arithmetic("multiplication")
-    Division = arithmetic("division")
+    Addition = arithmetic("+")
+    Subtraction = arithmetic("-")
+    Multiplication = arithmetic("*")
+    Division = arithmetic("/")
 
     def Number(self, number):
         self.current.type = Integer(32)
