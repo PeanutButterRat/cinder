@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from cinder.ast import Addition, Number, Subtraction, _Expression
-from cinder.visitors import Interpreter, Visitor
+from cinder.visitor import Interpreter, Visitor
 
 
 def test_visitor():

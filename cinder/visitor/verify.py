@@ -1,7 +1,7 @@
 from cinder.ast import _Node
 from cinder.ast.types import *
 from cinder.symbols import Symbols
-from cinder.visitors.visitor import Interpreter, Visitor
+from cinder.visitor.visitor import Interpreter, Visitor
 
 
 class ExpressionVerifier(Visitor):

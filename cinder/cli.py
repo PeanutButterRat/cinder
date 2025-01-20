@@ -9,7 +9,7 @@ from llvmlite.binding import Target
 
 from cinder import parser
 from cinder.ast import transformer
-from cinder.visitors import ASTCompiler, TreeVerifier
+from cinder.visitor import ASTCompiler, TreeVerifier
 
 
 def main():

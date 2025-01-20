@@ -2,7 +2,7 @@ from llvmlite import ir
 
 from cinder.ast import _Node
 from cinder.symbols import Symbols
-from cinder.visitors.visitor import Interpreter
+from cinder.visitor.visitor import Interpreter
 
 
 class ASTCompiler(Interpreter):

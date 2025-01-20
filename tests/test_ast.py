@@ -4,7 +4,7 @@ from lark import Lark
 from cinder import GRAMMAR
 from cinder.ast import transformer
 from cinder.ast.node import _Node
-from cinder.visitors.verify import TreeVerifier
+from cinder.visitor.verify import TreeVerifier
 
 
 @pytest.mark.parametrize(
