@@ -138,14 +138,16 @@ class ASTCompiler(Interpreter):
         result = self.builder.not_(self.visit(expression))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Function(self, name, body):
+    def Function(self, name, return_type, body):
         function = self.symbols[name]
         block = function.append_basic_block()
         self.builder = ir.IRBuilder(block)
 
         self.visit(body)
-        self.builder.ret(ir.Constant(ir.IntType(32), 0))
 
-    def Call(self, name):
+    def Call(self, name, type):
         function = self.symbols[name]
         return self.builder.call(function, [])
+
+    def Return(self, expression):
+        self.builder.ret(self.visit(expression))

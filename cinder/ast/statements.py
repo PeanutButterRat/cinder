@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-from cinder.ast import AsList, _Node
-from cinder.ast.expressions import _Expression
+from cinder.ast import AsList, _Expression, _Node
+from cinder.ast.types import Type, Void
 
 
 @dataclass
@@ -60,8 +60,15 @@ class IfElse(_Statement, AsList):
 @dataclass
 class Function(_Node):
     name: str
+    return_type: Type
     body: Block
 
-    def __init__(self, identifier, body):
+    def __init__(self, identifier, return_type, body):
         self.name = identifier.name
+        self.return_type = Void() if return_type is None else return_type
         self.body = body
+
+
+@dataclass
+class Return(_Statement):
+    expresssion: _Expression

@@ -2,13 +2,14 @@
 
 program: function* -> program
 
-function: "fn" CNAME "()" block
+function: "fn" CNAME "()" ["->" TYPE] block
 call: CNAME "()"
 
 ?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> assign
           | "print" expression ";"                                          -> print
           | "if" expression block ("elif" expression block)* ["else" block] -> if_else
           | call ";"
+          | "return" expression ";"                                         -> return
 
 block: "{" statement* "}" -> block
 

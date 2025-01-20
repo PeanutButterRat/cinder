@@ -8,7 +8,20 @@ from cinder.cli import compile, parse
 @pytest.mark.parametrize(
     "source, stdout",
     [
-        ["fn test() { print 1; } fn main() { test(); test(); }", "1\n1"],
+        [
+            """
+            fn main() -> i32 {
+                let a: i32 = test() + test();
+                print a;
+                return 0;
+            }
+
+            fn test() -> i32 {
+                return 1;
+            }
+            """,
+            "2",
+        ],
     ],
 )
 def test_compilation(source, stdout):

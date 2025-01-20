@@ -11,6 +11,8 @@ class Type:
             return Integer(32)
         elif type == "bool":
             return Boolean()
+        elif type is None:
+            return Void()
         else:
             raise ValueError(f"unknown type ({type})")
 
@@ -39,3 +41,9 @@ class Function(Type):
 
     def to_llvm(self):
         return ir.FunctionType(self.return_type.to_llvm(), [])
+
+
+@dataclass
+class Void(Type):
+    def to_llvm(self):
+        return ir.VoidType()

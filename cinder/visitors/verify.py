@@ -74,7 +74,11 @@ class ExpressionVerifier(Visitor):
         self.current.type = Boolean()
 
     def Call(self, name):
-        pass
+        assert name in self.symbols, f"function is undefined ({name})"
+        assert isinstance(
+            self.symbols[name], Function
+        ), f"identifier is not callable ({name})"
+        self.current.type = self.symbols[name].return_type
 
 
 class TreeVerifier(Interpreter):
@@ -90,14 +94,14 @@ class TreeVerifier(Interpreter):
             if name in self.symbols:
                 raise RuntimeError(f"function previously defined ({name})")
             else:
-                self.symbols[name] = Function(Integer(32))
+                self.symbols[name] = Function(function.return_type)
 
         for function in functions:
             self.visit(function)
 
         return self.symbols
 
-    def Function(self, name, body):
+    def Function(self, name, return_type, body):
         self.visit(body)
 
     def Block(self, statements):
@@ -131,7 +135,10 @@ class TreeVerifier(Interpreter):
         self.verifier.visit(expression)
 
     def Call(self, name):
-        assert name in self.symbols, f"function is used but is not defined ({name})"
+        assert name in self.symbols, f"function is undefined ({name})"
         assert isinstance(
             self.symbols[name], Function
         ), f"identifier is not callable ({name})"
+
+    def Return(self, expression):
+        self.verifier.visit(expression)
