@@ -5,18 +5,24 @@ class Visitor:
     def __init__(self):
         self.current = None
 
-    def visit(self, node):
+    def visit(self, node, top_down=False):
         if isinstance(node, list):
             for element in node:
                 self.visit(element)
         elif isinstance(node, _Node):
             children = vars(node).values()
-            for child in children:
-                self.visit(child)
+
+            if not top_down:
+                for child in children:
+                    self.visit(child, top_down)
 
             self.current = node
             classname = type(node).__name__
             getattr(self, classname, self.__default__)(*children)
+
+            if top_down:
+                for child in children:
+                    self.visit(child, top_down)
 
     def __default__(self, *args):
         pass
