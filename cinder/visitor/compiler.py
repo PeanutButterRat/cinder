@@ -49,25 +49,25 @@ class ASTCompiler(Interpreter):
         )
         return self.builder.call(printf, [format, self.visit(expression)])
 
-    def Addition(self, left, right, type):
+    def Addition(self, left, right):
         return self.builder.add(self.visit(left), self.visit(right))
 
-    def Subtraction(self, left, right, type):
+    def Subtraction(self, left, right):
         return self.builder.sub(self.visit(left), self.visit(right))
 
-    def Multiplication(self, left, right, type):
+    def Multiplication(self, left, right):
         return self.builder.mul(self.visit(left), self.visit(right))
 
-    def Division(self, left, right, type):
+    def Division(self, left, right):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
-    def Number(self, value, type):
-        return ir.Constant(type.to_llvm(), value)
+    def Number(self, value):
+        return ir.Constant(ir.IntType(32), value)
 
-    def Boolean(self, boolean, type):
-        return ir.Constant(type.to_llvm(), 1 if boolean else 0)
+    def Boolean(self, boolean):
+        return ir.Constant(ir.IntType(1), 1 if boolean else 0)
 
-    def Identifier(self, name, type):
+    def Identifier(self, name):
         address = self.symbols[name]
         return self.builder.load(address)
 
@@ -108,33 +108,33 @@ class ASTCompiler(Interpreter):
             with self.builder.if_then(predicate):
                 self.visit(blocks[0])
 
-    def GreaterThan(self, left, right, type):
+    def GreaterThan(self, left, right):
         return self.builder.icmp_signed(">", self.visit(left), self.visit(right))
 
-    def GreaterEqual(self, left, right, type):
+    def GreaterEqual(self, left, right):
         return self.builder.icmp_signed(">=", self.visit(left), self.visit(right))
 
-    def LessThan(self, left, right, type):
+    def LessThan(self, left, right):
         return self.builder.icmp_signed("<", self.visit(left), self.visit(right))
 
-    def LessEqual(self, left, right, type):
+    def LessEqual(self, left, right):
         return self.builder.icmp_signed("<=", self.visit(left), self.visit(right))
 
-    def NotEqual(self, left, right, type):
+    def NotEqual(self, left, right):
         return self.builder.icmp_signed("!=", self.visit(left), self.visit(right))
 
-    def Equal(self, left, right, type):
+    def Equal(self, left, right):
         return self.builder.icmp_signed("==", self.visit(left), self.visit(right))
 
-    def And(self, left, right, type):
+    def And(self, left, right):
         result = self.builder.and_(self.visit(left), self.visit(right))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Or(self, left, right, type):
+    def Or(self, left, right):
         result = self.builder.or_(self.visit(left), self.visit(right))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Not(self, expression, type):
+    def Not(self, expression):
         result = self.builder.not_(self.visit(expression))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
@@ -145,7 +145,7 @@ class ASTCompiler(Interpreter):
 
         self.visit(body)
 
-    def Call(self, name, type):
+    def Call(self, name):
         function = self.symbols[name]
         return self.builder.call(function, [])
 

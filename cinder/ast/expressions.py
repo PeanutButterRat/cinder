@@ -1,14 +1,14 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from cinder.ast.node import _Node
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class _Expression(_Node):
-    type: str = field(default=None, init=False)
+    pass
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Addition(_Expression):
     left: _Expression
     right: _Expression
@@ -17,7 +17,7 @@ class Addition(_Expression):
         return "+"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Subtraction(_Expression):
     left: _Expression
     right: _Expression
@@ -26,7 +26,7 @@ class Subtraction(_Expression):
         return "-"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Multiplication(_Expression):
     left: _Expression
     right: _Expression
@@ -35,7 +35,7 @@ class Multiplication(_Expression):
         return "*"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Division(_Expression):
     left: _Expression
     right: _Expression
@@ -44,7 +44,7 @@ class Division(_Expression):
         return "/"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Number(_Expression):
     value: int
 
@@ -55,7 +55,7 @@ class Number(_Expression):
         return str(self.value)
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Boolean(_Expression):
     value: bool
 
@@ -66,7 +66,7 @@ class Boolean(_Expression):
         return str(self.value)
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Identifier(_Node):
     name: str
 
@@ -74,7 +74,7 @@ class Identifier(_Node):
         self.name = name.value
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class GreaterThan(_Expression):
     left: _Expression
     right: _Expression
@@ -83,7 +83,7 @@ class GreaterThan(_Expression):
         return ">"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class GreaterEqual(_Expression):
     left: _Expression
     right: _Expression
@@ -92,7 +92,7 @@ class GreaterEqual(_Expression):
         return ">="
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class LessThan(_Expression):
     left: _Expression
     right: _Expression
@@ -101,7 +101,7 @@ class LessThan(_Expression):
         return "<"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class LessEqual(_Expression):
     left: _Expression
     right: _Expression
@@ -110,7 +110,7 @@ class LessEqual(_Expression):
         return "<="
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class NotEqual(_Expression):
     left: _Expression
     right: _Expression
@@ -119,7 +119,7 @@ class NotEqual(_Expression):
         return "!="
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Equal(_Expression):
     left: _Expression
     right: _Expression
@@ -128,23 +128,24 @@ class Equal(_Expression):
         return "=="
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class And(_Expression):
     left: _Expression
     right: _Expression
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Or(_Expression):
     left: _Expression
     right: _Expression
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Not(_Expression):
     expression: _Expression
 
 
+@dataclass(unsafe_hash=True)
 class Call(_Expression):
     name: str
 

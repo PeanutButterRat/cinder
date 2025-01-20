@@ -5,17 +5,17 @@ from cinder.ast import AsList, _Expression, _Node
 from cinder.ast.types import Type, Void
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class _Statement(_Node):
     pass
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Print(_Statement):
     expression: _Expression
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Assign(_Statement):
     identifier: str
     expression: _Expression
@@ -29,7 +29,7 @@ class Assign(_Statement):
         return f"Assign ({self.identifier}: {self.type})"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Block(_Statement, AsList):
     statements: List[_Statement]
 
@@ -37,7 +37,7 @@ class Block(_Statement, AsList):
         return f"Block ({len(self.statements)})"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class IfElse(_Statement, AsList):
     expressions: List[_Expression]
     blocks: List[Block]
@@ -57,7 +57,7 @@ class IfElse(_Statement, AsList):
         return "If" if self.otherwise is None else "If-Else"
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Function(_Node):
     name: str
     return_type: Type
@@ -69,6 +69,6 @@ class Function(_Node):
         self.body = body
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class Return(_Statement):
     expresssion: _Expression

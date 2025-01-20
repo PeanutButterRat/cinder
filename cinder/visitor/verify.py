@@ -8,13 +8,14 @@ class ExpressionVerifier(Visitor):
     def __init__(self, symbols):
         super().__init__()
         self.symbols = symbols
+        self.expressions = {}
 
     def arithmetic(operator):
         def verification(self, left, right):
             assert (
-                left.type == right.type
-            ), f"mismatched types in arithmetic expression ({left.type} {operator} {right.type})"
-            self.current.type = left.type
+                self.expressions[left] == self.expressions[right]
+            ), f"mismatched types in arithmetic expression ({self.expressions[left]} {operator} {self.expressions[right]})"
+            self.expressions[self.current] = self.expressions[left]
 
         return verification
 
@@ -24,24 +25,24 @@ class ExpressionVerifier(Visitor):
     Division = arithmetic("/")
 
     def Number(self, number):
-        self.current.type = Integer(32)
+        self.expressions[self.current] = Integer(32)
 
     def Boolean(self, boolean):
-        self.current.type = Boolean()
+        self.expressions[self.current] = Boolean()
 
     def Identifier(self, name):
         assert name in self.symbols, f"undefined identifier ({name})"
-        self.current.type = self.symbols[name]
+        self.expressions[self.current] = self.symbols[name]
 
     def comparison(operator):
         def verification(self, left, right):
-            assert left.type == Integer(
+            assert self.expressions[left] == Integer(
                 32
-            ), f"left side of comparison ({operator}) is not an integer expession ({left.type})"
-            assert right.type == Integer(
+            ), f"left side of comparison ({operator}) is not an integer expession ({self.expressions[left]})"
+            assert self.expressions[right] == Integer(
                 32
-            ), f"right side of comparison ({operator}) is not an integer expession ({right.type})"
-            self.current.type = Boolean()
+            ), f"right side of comparison ({operator}) is not an integer expession ({self.expressions[right]})"
+            self.expressions[self.current] = Boolean()
 
         return verification
 
@@ -55,12 +56,12 @@ class ExpressionVerifier(Visitor):
     def logical_expression(operator):
         def verification(self, left, right):
             assert (
-                left.type == Boolean()
-            ), f"left side of boolean expression ({operator}) is not boolean expressions ({left.type})"
+                self.expressions[left] == Boolean()
+            ), f"left side of boolean expression ({operator}) is not boolean expressions ({self.expressions[left]})"
             assert (
-                right.type == Boolean()
-            ), f"right side of boolean expression ({operator}) is not boolean expressions ({right.type})"
-            self.current.type = Boolean()
+                self.expressions[right] == Boolean()
+            ), f"right side of boolean expression ({operator}) is not boolean expressions ({self.expressions[right]})"
+            self.expressions[self.current] = Boolean()
 
         return verification
 
@@ -69,16 +70,16 @@ class ExpressionVerifier(Visitor):
 
     def Not(self, expression):
         assert (
-            expression.type == Boolean()
-        ), f"expression for boolean not is not boolean expressions ({expression.type})"
-        self.current.type = Boolean()
+            self.expressions[expression] == Boolean()
+        ), f"expression for boolean not is not boolean expressions ({self.expressions[expression]})"
+        self.expressions[self.current] = Boolean()
 
     def Call(self, name):
         assert name in self.symbols, f"function is undefined ({name})"
         assert isinstance(
             self.symbols[name], Function
         ), f"identifier is not callable ({name})"
-        self.current.type = self.symbols[name].return_type
+        self.expressions[self.current] = self.symbols[name].return_type
 
 
 class TreeVerifier(Interpreter):
@@ -116,7 +117,7 @@ class TreeVerifier(Interpreter):
         for condition in conditions:
             self.verifier.visit(condition)
             assert (
-                condition.type == Boolean()
+                self.verifier.expressions[condition] == Boolean()
             ), "condition for if-else statement is not boolean expression"
 
         for block in blocks:
@@ -127,9 +128,9 @@ class TreeVerifier(Interpreter):
     def Assign(self, identifier, type, expression):
         self.verifier.visit(expression)
         assert (
-            type == expression.type
-        ), f"mismatched types in assignment ({type}, {expression.type})"
-        self.symbols[identifier] = expression.type
+            type == self.verifier.expressions[expression]
+        ), f"mismatched types in assignment ({type}, {self.verifier.expressions[expression]})"
+        self.symbols[identifier] = self.verifier.expressions[expression]
 
     def Print(self, expression):
         self.verifier.visit(expression)
