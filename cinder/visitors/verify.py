@@ -52,23 +52,20 @@ class ExpressionVerifier(Visitor):
     NotEqual = comparison("!=")
     Equal = comparison("==")
 
-    def And(self, left, right):
-        assert (
-            left.type == Boolean()
-        ), f"left side of boolean and is not boolean expressions ({left.type})"
-        assert (
-            right.type == Boolean()
-        ), f"right side of boolean and is not boolean expressions ({right.type})"
-        self.current.type = Boolean()
+    def logical_expression(operator):
+        def verification(self, left, right):
+            assert (
+                left.type == Boolean()
+            ), f"left side of boolean expression ({operator}) is not boolean expressions ({left.type})"
+            assert (
+                right.type == Boolean()
+            ), f"right side of boolean expression ({operator}) is not boolean expressions ({right.type})"
+            self.current.type = Boolean()
 
-    def Or(self, left, right):
-        assert (
-            left.type == Boolean()
-        ), f"left side of boolean or is not boolean expressions ({left.type})"
-        assert (
-            right.type == Boolean()
-        ), f"right side of boolean or is not boolean expressions ({right.type})"
-        self.current.type = Boolean()
+        return verification
+
+    And = logical_expression("and")
+    Or = logical_expression("or")
 
     def Not(self, expression):
         assert (
