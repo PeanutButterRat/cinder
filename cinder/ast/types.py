@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from llvmlite import ir
 
@@ -37,10 +38,12 @@ class Boolean(Type):
 
 @dataclass
 class Function(Type):
+    parameters: List[Type]
     return_type: Type
 
     def to_llvm(self):
-        return ir.FunctionType(self.return_type.to_llvm(), [])
+        args = [arg.type.to_llvm() for arg in self.parameters]
+        return ir.FunctionType(self.return_type.to_llvm(), args)
 
 
 @dataclass

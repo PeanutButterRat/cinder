@@ -74,7 +74,7 @@ class ExpressionVerifier(Visitor):
         ), f"expression for boolean not is not boolean expressions ({self.expressions[expression]})"
         self.expressions[self.current] = Boolean()
 
-    def Call(self, name):
+    def Call(self, name, expressions):
         assert name in self.symbols, f"function is undefined ({name})"
         assert isinstance(
             self.symbols[name], Function
@@ -95,14 +95,25 @@ class TreeVerifier(Interpreter):
             if name in self.symbols:
                 raise RuntimeError(f"function previously defined ({name})")
             else:
-                self.symbols[name] = Function(function.return_type)
+                self.symbols[name] = Function(function.parameters, function.return_type)
 
         for function in functions:
             self.visit(function)
 
         return self.symbols
 
-    def Function(self, name, return_type, body):
+    def Function(self, name, parameters, return_type, body):
+        identifiers = set()
+
+        for parameter in parameters:
+            if parameter.name in identifiers:
+                raise RuntimeError(
+                    f"{name} has a duplicated parameter name ({parameter.name})"
+                )
+            else:
+                identifiers.add(parameter.name)
+                self.symbols[parameter.name] = parameter.type
+
         self.visit(body)
 
     def Block(self, statements):
@@ -135,7 +146,7 @@ class TreeVerifier(Interpreter):
     def Print(self, expression):
         self.verifier.visit(expression)
 
-    def Call(self, name):
+    def Call(self, name, arguments):
         assert name in self.symbols, f"function is undefined ({name})"
         assert isinstance(
             self.symbols[name], Function

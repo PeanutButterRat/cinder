@@ -58,15 +58,27 @@ class IfElse(_Statement, AsList):
 
 
 @dataclass(unsafe_hash=True)
-class Function(_Node):
+class Parameter(_Node):
     name: str
+    type: Type
+
+    def __init__(self, identifier, type):
+        self.name = identifier.name
+        self.type = type
+
+
+@dataclass(unsafe_hash=True)
+class Function(_Node, AsList):
+    name: str
+    parameters: List[Parameter]
     return_type: Type
     body: Block
 
-    def __init__(self, identifier, return_type, body):
-        self.name = identifier.name
-        self.return_type = Void() if return_type is None else return_type
-        self.body = body
+    def __init__(self, args):
+        self.name = args[0].name
+        self.parameters = args[1:-2]
+        self.return_type = Void() if args[-2] is None else args[-2]
+        self.body = args[-1]
 
 
 @dataclass(unsafe_hash=True)

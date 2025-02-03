@@ -69,12 +69,12 @@ class TreeCompiler(Interpreter):
 
     def Identifier(self, name):
         address = self.symbols[name]
-        return self.builder.load(address)
+        return address
 
     def Assign(self, identifier, type, expression):
         address = self.builder.alloca(type.to_llvm(), name=identifier)
-        self.symbols[identifier] = address
         self.builder.store(self.visit(expression), address)
+        self.symbols[identifier] = self.builder.load(address)
 
     def Block(self, statements):
         self.symbols = self.symbols.push()
@@ -138,16 +138,22 @@ class TreeCompiler(Interpreter):
         result = self.builder.not_(self.visit(expression))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Function(self, name, return_type, body):
+    def Function(self, name, parameters, return_type, body):
         function = self.symbols[name]
+
+        for parameter, arg in zip(parameters, function.args):
+            self.symbols[parameter.name] = arg
+
         block = function.append_basic_block()
         self.builder = ir.IRBuilder(block)
 
         self.visit(body)
 
-    def Call(self, name):
+    def Call(self, name, expressions):
         function = self.symbols[name]
-        return self.builder.call(function, [])
+        return self.builder.call(
+            function, [self.visit(expression) for expression in expressions]
+        )
 
     def Return(self, expression):
         self.builder.ret(self.visit(expression))

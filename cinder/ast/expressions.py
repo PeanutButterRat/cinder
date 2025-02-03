@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+from typing import List
+
+from lark.ast_utils import AsList
 
 from cinder.ast.node import _Node
 
@@ -145,9 +148,10 @@ class Not(_Expression):
     expression: _Expression
 
 
-@dataclass(unsafe_hash=True)
-class Call(_Expression):
+class Call(_Expression, AsList):
     name: str
+    expressions: List[_Expression]
 
-    def __init__(self, identifier):
-        self.name = identifier.name
+    def __init__(self, args):
+        self.name = args[0].name
+        self.expressions = args[1:]

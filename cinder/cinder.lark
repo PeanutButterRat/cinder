@@ -2,8 +2,9 @@
 
 program: function* -> program
 
-function: "fn" CNAME "()" ["->" TYPE] block
-call: CNAME "()"
+function: "fn" CNAME "(" (parameter ("," parameter)*)? ")" ["->" TYPE] block
+parameter: CNAME ":" TYPE
+call: CNAME "(" (expression ("," expression)*)? ")"
 
 ?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> assign
           | "print" expression ";"                                          -> print
