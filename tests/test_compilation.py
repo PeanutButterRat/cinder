@@ -3,28 +3,19 @@ import subprocess
 import pytest
 
 from cinder.cli import compile, parse
+from os.path import join, dirname, realpath
+import os
 
+TEST_DIRECTORY = join(dirname(realpath(__file__)), "programs")
+FILENAMES = [join(TEST_DIRECTORY, file) for file in os.listdir(TEST_DIRECTORY)]
 
-@pytest.mark.parametrize(
-    "source, stdout",
-    [
-        [
-            """
-            fn main() -> i32 {
-                let a: i32 = test() + test();
-                print a;
-                return 0;
-            }
+@pytest.mark.parametrize("filepath", FILENAMES)
+def test_compilation(filepath):
+    file = open(filepath)
+    source = file.read()
+    stdout = source[:source.find('\n')].strip('/').strip()
+    file.close()
 
-            fn test() -> i32 {
-                return 1;
-            }
-            """,
-            "2",
-        ],
-    ],
-)
-def test_compilation(source, stdout):
     ast, globals = parse(source)
     compile(ast, globals)
 
