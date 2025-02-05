@@ -9,7 +9,7 @@ from cinder.ast.expressions import _Expression
 from cinder.ast.node import _Node
 from cinder.ast.statements import *
 from cinder.ast.statements import _Statement
-from cinder.ast.type import Type
+from cinder.ast.types import Type
 
 
 class AstTransformer(Transformer):
@@ -22,7 +22,7 @@ class AstTransformer(Transformer):
 
 @dataclass
 class Program(_Node, AsList):
-    statements: List[_Statement]
+    functions: List[Function]
 
 
 module = sys.modules[__name__]

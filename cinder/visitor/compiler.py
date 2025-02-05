@@ -2,18 +2,15 @@ from llvmlite import ir
 
 from cinder.ast import _Node
 from cinder.symbols import Symbols
-from cinder.visitors.visitor import Interpreter
+from cinder.visitor.visitor import Interpreter
 
 
-class ASTCompiler(Interpreter):
-    def __init__(self):
+class TreeCompiler(Interpreter):
+    def __init__(self, globals):
         super().__init__()
-        self.symbols = Symbols()
+        self.symbols = globals
         self.module = ir.Module()
-
-        entry = ir.Function(self.module, ir.FunctionType(ir.IntType(32), []), "main")
-        block = entry.append_basic_block()
-        self.builder = ir.IRBuilder(block)
+        self.builder = None
 
         printf = ir.Function(
             self.module,
@@ -34,11 +31,14 @@ class ASTCompiler(Interpreter):
 
         self.symbols["printf"] = printf
 
-    def Program(self, statements):
-        for statement in statements:
-            self.visit(statement)
+    def Program(self, functions):
+        for function in functions:
+            name = function.name
+            type = self.symbols[name].to_llvm()
+            self.symbols[name] = ir.Function(self.module, type, name)
 
-        self.builder.ret(ir.Constant(ir.IntType(32), 0))
+        for function in functions:
+            self.visit(function)
 
         return self.module
 
@@ -49,32 +49,32 @@ class ASTCompiler(Interpreter):
         )
         return self.builder.call(printf, [format, self.visit(expression)])
 
-    def Addition(self, left, right, type):
+    def Addition(self, left, right):
         return self.builder.add(self.visit(left), self.visit(right))
 
-    def Subtraction(self, left, right, type):
+    def Subtraction(self, left, right):
         return self.builder.sub(self.visit(left), self.visit(right))
 
-    def Multiplication(self, left, right, type):
+    def Multiplication(self, left, right):
         return self.builder.mul(self.visit(left), self.visit(right))
 
-    def Division(self, left, right, type):
+    def Division(self, left, right):
         return self.builder.sdiv(self.visit(left), self.visit(right))
 
-    def Number(self, value, type):
-        return ir.Constant(type.to_ir(), value)
+    def Number(self, value):
+        return ir.Constant(ir.IntType(32), value)
 
-    def Boolean(self, boolean, type):
-        return ir.Constant(type.to_ir(), 1 if boolean else 0)
+    def Boolean(self, boolean):
+        return ir.Constant(ir.IntType(1), 1 if boolean else 0)
 
-    def Identifier(self, name, type):
+    def Identifier(self, name):
         address = self.symbols[name]
-        return self.builder.load(address)
+        return address
 
     def Assign(self, identifier, type, expression):
-        address = self.builder.alloca(type.to_ir(), name=identifier)
-        self.symbols[identifier] = address
+        address = self.builder.alloca(type.to_llvm(), name=identifier)
         self.builder.store(self.visit(expression), address)
+        self.symbols[identifier] = self.builder.load(address)
 
     def Block(self, statements):
         self.symbols = self.symbols.push()
@@ -108,32 +108,52 @@ class ASTCompiler(Interpreter):
             with self.builder.if_then(predicate):
                 self.visit(blocks[0])
 
-    def GreaterThan(self, left, right, type):
+    def GreaterThan(self, left, right):
         return self.builder.icmp_signed(">", self.visit(left), self.visit(right))
 
-    def GreaterEqual(self, left, right, type):
+    def GreaterEqual(self, left, right):
         return self.builder.icmp_signed(">=", self.visit(left), self.visit(right))
 
-    def LessThan(self, left, right, type):
+    def LessThan(self, left, right):
         return self.builder.icmp_signed("<", self.visit(left), self.visit(right))
 
-    def LessEqual(self, left, right, type):
+    def LessEqual(self, left, right):
         return self.builder.icmp_signed("<=", self.visit(left), self.visit(right))
 
-    def NotEqual(self, left, right, type):
+    def NotEqual(self, left, right):
         return self.builder.icmp_signed("!=", self.visit(left), self.visit(right))
 
-    def Equal(self, left, right, type):
+    def Equal(self, left, right):
         return self.builder.icmp_signed("==", self.visit(left), self.visit(right))
 
-    def And(self, left, right, type):
+    def And(self, left, right):
         result = self.builder.and_(self.visit(left), self.visit(right))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Or(self, left, right, type):
+    def Or(self, left, right):
         result = self.builder.or_(self.visit(left), self.visit(right))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
 
-    def Not(self, expression, type):
+    def Not(self, expression):
         result = self.builder.not_(self.visit(expression))
         return self.builder.icmp_signed("!=", result, ir.Constant(ir.IntType(32), 0))
+
+    def Function(self, name, parameters, return_type, body):
+        function = self.symbols[name]
+
+        for parameter, arg in zip(parameters, function.args):
+            self.symbols[parameter.name] = arg
+
+        block = function.append_basic_block()
+        self.builder = ir.IRBuilder(block)
+
+        self.visit(body)
+
+    def Call(self, name, expressions):
+        function = self.symbols[name]
+        return self.builder.call(
+            function, [self.visit(expression) for expression in expressions]
+        )
+
+    def Return(self, expression):
+        self.builder.ret(self.visit(expression))

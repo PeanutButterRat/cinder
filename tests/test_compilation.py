@@ -3,19 +3,21 @@ import subprocess
 import pytest
 
 from cinder.cli import compile, parse
+from os.path import join, dirname, realpath
+import os
 
+TEST_DIRECTORY = join(dirname(realpath(__file__)), "programs")
+FILENAMES = [join(TEST_DIRECTORY, file) for file in os.listdir(TEST_DIRECTORY)]
 
-@pytest.mark.parametrize(
-    "source, stdout",
-    [
-        ["let foo: i32 = 12; let bar: i32 = foo / 2 + 1; print foo + bar;", "19"],
-        ["let True: bool = 1 + 2 > 2; if True { print 1; } else { print 0; }", "1"],
-        ["if (1 * 2 + 1) == 3 { print 100; }", "100"],
-    ],
-)
-def test_compilation(source, stdout):
-    ast = parse(source)
-    compile(ast)
+@pytest.mark.parametrize("filepath", FILENAMES)
+def test_compilation(filepath):
+    file = open(filepath)
+    source = file.read()
+    stdout = source[:source.find('\n')].strip('/').strip()
+    file.close()
+
+    ast, globals = parse(source)
+    compile(ast, globals)
 
     process = subprocess.run(["build/output.exe"], capture_output=True, text=True)
 

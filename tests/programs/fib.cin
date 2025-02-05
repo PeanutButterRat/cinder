@@ -1,0 +1,13 @@
+// 55
+fn main() -> i32 {
+    let sequence: i32 = fib(10);
+    print sequence;
+    return 0;
+}
+
+fn fib(n: i32) -> i32 {
+    if n <= 1 {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}

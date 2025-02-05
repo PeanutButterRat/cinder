@@ -4,7 +4,7 @@ import treelib
 from lark.ast_utils import Ast
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class _Node(Ast):
     def pretty(self, tree=treelib.Tree()):
         def helper(ast, parent=None):

@@ -1,31 +1,37 @@
 ?start: program
 
-program: statement* -> program
+program: function* -> program
 
-?statement: "let" CNAME ":" TYPE "=" value ";"                    -> assign
-          | "print" value ";"                                     -> print
-          | "if" value block ("elif" value block)* ["else" block] -> if_else
+function: "fn" CNAME "(" (parameter ("," parameter)*)? ")" ["->" TYPE] block
+parameter: CNAME ":" TYPE
+call: CNAME "(" (expression ("," expression)*)? ")"
+
+?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> assign
+          | "print" expression ";"                                          -> print
+          | "if" expression block ("elif" expression block)* ["else" block] -> if_else
+          | call ";"
+          | "return" expression ";"                                         -> return
 
 block: "{" statement* "}" -> block
 
-?value: logical
+?expression: logical
 
 ?logical: logical "and" comparison -> and
        | logical "or" comparison   -> or
        | "not" logical             -> not
        | comparison
 
-?comparison: expression
-           | comparison ">" expression  -> greater_than
-           | comparison ">=" expression -> greater_equal
-           | comparison "<" expression  -> less_than
-           | comparison "<=" expression -> less_equal
-           | comparison "!=" expression -> not_equal
-           | comparison "==" expression -> equal
+?comparison: arithmetic
+           | comparison ">" arithmetic  -> greater_than
+           | comparison ">=" arithmetic -> greater_equal
+           | comparison "<" arithmetic  -> less_than
+           | comparison "<=" arithmetic -> less_equal
+           | comparison "!=" arithmetic -> not_equal
+           | comparison "==" arithmetic -> equal
 
-?expression: term
-           | expression "+" term -> addition
-           | expression "-" term -> subtraction
+?arithmetic: term
+           | arithmetic "+" term -> addition
+           | arithmetic "-" term -> subtraction
 
 ?term: factor
      | term "*" factor -> multiplication
@@ -35,6 +41,7 @@ block: "{" statement* "}" -> block
        | BOOL    -> boolean
        | CNAME
        | "(" logical ")"
+       | call
 
 TYPE: "i32" | "bool"
 BOOL: "true" | "false"
@@ -42,5 +49,7 @@ BOOL: "true" | "false"
 %import common.NUMBER
 %import common.WS
 %import common.CNAME
+%import common.CPP_COMMENT
 
 %ignore WS
+%ignore CPP_COMMENT
