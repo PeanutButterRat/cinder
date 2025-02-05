@@ -83,4 +83,4 @@ class Function(_Node, AsList):
 
 @dataclass(unsafe_hash=True)
 class Return(_Statement):
-    expresssion: _Expression
+    expression: _Expression
