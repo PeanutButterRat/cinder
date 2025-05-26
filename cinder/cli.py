@@ -32,6 +32,12 @@ def main():
         help="print the stack trace if an exception is raised",
         action="store_true",
     )
+    argparser.add_argument(
+        "-d",
+        "--dump-assembly",
+        help="prints the llvm assembly before compiling",
+        action="store_true",
+    )
 
     args = argparser.parse_args()
 
@@ -45,7 +51,7 @@ def main():
             print(ast.pretty())
 
         target = args.target if args.target else "default"
-        compile(ast, globals, target)
+        compile(ast, globals, target, args.dump_assembly)
 
     except Exception as e:
         if args.stack_trace:
@@ -61,7 +67,7 @@ def parse(source):
     return ast, globals
 
 
-def compile(ast, globals, target="default"):
+def compile(ast, globals, target="default", dump_assembly=False):
     module = TreeCompiler(globals).visit(ast)
 
     binding.initialize()
@@ -75,6 +81,10 @@ def compile(ast, globals, target="default"):
 
     machine = target.create_target_machine(codemodel="default")
     assembly = str(module)
+
+    if dump_assembly:
+        print(assembly)
+
     module = binding.parse_assembly(assembly)
 
     with NamedTemporaryFile(delete=False) as file:
