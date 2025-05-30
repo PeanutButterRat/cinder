@@ -1,6 +1,7 @@
 from llvmlite import ir
 
 from cinder.ast import _Node
+from cinder.ast.expressions import String
 from cinder.symbols import Symbols
 from cinder.visitor.visitor import Interpreter
 
@@ -20,14 +21,13 @@ class TreeCompiler(Interpreter):
             name="printf",
         )
 
-        format = ir.GlobalVariable(
-            self.module, ir.ArrayType(ir.IntType(8), count=4), name="format"
-        )
-        format.global_constant = True
-        format.initializer = ir.Constant(
-            ir.ArrayType(ir.IntType(8), count=4),
-            bytearray("%d\n".encode("utf8") + b"\0"),
-        )
+        for format, name in [("%d\n\0", "integer_format"), ("%s\n\0", "string_format")]:
+            print_string_type = ir.ArrayType(ir.IntType(8), count=len(format))
+            print_string = ir.GlobalVariable(self.module, print_string_type, name=name)
+            print_string.global_constant = True
+            print_string.initializer = ir.Constant(
+                print_string_type, bytearray(format.encode("utf8"))
+            )
 
         self.symbols["printf"] = printf
 
@@ -44,10 +44,26 @@ class TreeCompiler(Interpreter):
 
     def Print(self, expression):
         printf = self.symbols["printf"]
-        format = self.builder.bitcast(
-            self.module.get_global("format"), ir.PointerType(ir.IntType(8))
+        format_name = (
+            "string_format" if isinstance(expression, String) else "integer_format"
         )
+        format = self.builder.bitcast(
+            self.module.get_global(format_name), ir.PointerType(ir.IntType(8))
+        )
+
         return self.builder.call(printf, [format, self.visit(expression)])
+
+    def String(self, string):
+        raw_bytes = bytearray(string.encode("utf8") + b"\0")
+        global_name = f"str_{id(string)}"
+        global_type = ir.ArrayType(ir.IntType(8), count=len(raw_bytes))
+
+        global_variable = ir.GlobalVariable(self.module, global_type, name=global_name)
+        global_variable.global_constant = True
+        global_variable.initializer = ir.Constant(global_type, raw_bytes)
+        zero = ir.Constant(ir.IntType(32), 0)
+
+        return self.builder.gep(global_variable, [zero, zero], inbounds=True)
 
     def Addition(self, left, right):
         return self.builder.add(self.visit(left), self.visit(right))
