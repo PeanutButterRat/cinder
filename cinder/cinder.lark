@@ -7,7 +7,7 @@ parameter: CNAME ":" TYPE
 call: CNAME "(" (expression ("," expression)*)? ")"
 
 ?statement: "let" CNAME ":" TYPE "=" expression ";"                         -> assign
-          | "print" expression ";"                                          -> print
+          | "print" (expression | STRING) ";"                               -> print
           | "if" expression block ("elif" expression block)* ["else" block] -> if_else
           | call ";"
           | "return" expression ";"                                         -> return
@@ -45,6 +45,7 @@ block: "{" statement* "}" -> block
 
 TYPE: "i32" | "bool"
 BOOL: "true" | "false"
+STRING: /\"[^"]*\"/
 
 %import common.NUMBER
 %import common.WS

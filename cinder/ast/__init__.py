@@ -19,6 +19,9 @@ class AstTransformer(Transformer):
     def TYPE(self, type):
         return Type.from_string(type)
 
+    def STRING(self, string):
+        return String(string)
+
 
 @dataclass
 class Program(_Node, AsList):

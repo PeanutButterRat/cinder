@@ -78,6 +78,14 @@ class Identifier(_Node):
 
 
 @dataclass(unsafe_hash=True)
+class String(_Node):
+    value: str
+
+    def __init__(self, string):
+        self.name = string.value
+
+
+@dataclass(unsafe_hash=True)
 class GreaterThan(_Expression):
     left: _Expression
     right: _Expression
