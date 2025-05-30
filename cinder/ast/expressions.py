@@ -82,7 +82,7 @@ class String(_Node):
     value: str
 
     def __init__(self, string):
-        self.name = string.value
+        self.name = string.value[1:-1]
 
 
 @dataclass(unsafe_hash=True)

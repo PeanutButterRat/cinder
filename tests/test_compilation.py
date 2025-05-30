@@ -13,8 +13,18 @@ FILENAMES = [join(TEST_DIRECTORY, file) for file in os.listdir(TEST_DIRECTORY)]
 @pytest.mark.parametrize("filepath", FILENAMES)
 def test_compilation(filepath):
     file = open(filepath)
-    source = file.read()
-    stdout = source[: source.find("\n")].strip("/").strip()
+    source = file.readlines()
+    stdout = []
+
+    for line in source:
+        print(line)
+        if line.startswith("//"):
+            stdout.append(line.lstrip("//").strip())
+        else:
+            break
+
+    stdout = "\n".join(stdout)
+    source = "".join(source)
     file.close()
 
     ast, globals = parse(source)
