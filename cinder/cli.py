@@ -14,7 +14,7 @@ from cinder.visitor import TreeCompiler, TreeVerifier
 
 def main():
     argparser = argparse.ArgumentParser(
-        prog="cinder", description="A low-level systems programming language."
+        prog="cinder", description="A simple rust-like programming language."
     )
     argparser.add_argument("file", help="source file to compile")
     argparser.add_argument(

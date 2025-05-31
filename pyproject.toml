@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "cinder"
-version = "0.1.0"
-description = ""
+version = "1.0.0"
+description = "A simple rust-like programming language."
 authors = ["Eric Brown <ebrown5676@gmail.com>"]
 readme = "README.md"
 
